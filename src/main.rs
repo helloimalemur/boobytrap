@@ -1,12 +1,12 @@
 use crate::devices::USBMon;
-use crate::tw::AppState;
+use crate::tw::{AppState, Monitors};
 
 mod devices;
 mod tw;
 
 
 fn main() {
-    let app = AppState::new();
-    // app.monitors.push(USBMon::new());
+    let mut app = AppState::new();
+    app.monitors.push(Monitors::USB(USBMon::new()));
     app.run();
 }
