@@ -23,8 +23,10 @@ impl USBMon {
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
         let new_devices = get_usb_devices_physical().await;
-        if self.last_check != 0 && self.last_check < new_devices.len() {
-            self.triggered = true;
+        if self.last_check != 0 && self.last_check != new_devices.len() {
+            if self.last_check < new_devices.len() {
+                self.triggered = true;
+            }
             self.devices = new_devices;
             self.total_devices = self.devices.len();
             self.last_check = self.total_devices;
