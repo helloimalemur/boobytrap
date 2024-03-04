@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use crate::tw::EventMonitor;
+use crate::actions::*;
 use crate::tw::*;
 use std::process::Command;
 
@@ -75,7 +76,5 @@ async fn get_usb_devices_physical() -> Vec<String> {
 }
 
 async fn usb_alert() {
-    if let Ok(reboot) = Command::new("reboot").output() {
-        println!("{:#?}", reboot)
-    }
+    reboot_system().await;
 }

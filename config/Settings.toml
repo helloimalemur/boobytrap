@@ -1,1 +1,3 @@
-increase_of_usb_devices = "reboot"
+reboot_on_increase_of_usb_devices = "true"
+unmount_on_increase_of_usb_devices = "true"
+umount_1 = ""

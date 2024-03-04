@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::tw::EventMonitor;
 use crate::tw::*;
-use tokio::process::Command;
+use crate::actions::reboot_system;
 
 pub struct NETMon {
     triggered: bool,
@@ -30,7 +30,5 @@ impl EventMonitor for NETMon {
 }
 
 async fn net_alert() {
-    if let Ok(reboot) = Command::new("reboot").output().await {
-        println!("{:#?}", reboot)
-    }
+    reboot_system().await;
 }
