@@ -25,15 +25,18 @@ impl USBMon {
 impl EventMonitor for USBMon {
     async fn check(&mut self, settings_map: HashMap<String, String>) {
         let new_devices = get_usb_devices_physical().await;
+
         if self.last_check != 0 && self.last_check != new_devices.len() {
+            self.devices = new_devices.clone();
+            self.total_devices = self.devices.len();
+
             if self.last_check < new_devices.len() {
                 self.triggered = true;
-                println!("Total devices DECREASED: {}", self.total_devices);
-            } else if self.last_check > new_devices.len() {
                 println!("Total devices INCREASED: {}", self.total_devices);
+            } else if self.last_check > new_devices.len() {
+                println!("Total devices DECREASED: {}", self.total_devices);
             }
-            self.devices = new_devices;
-            self.total_devices = self.devices.len();
+
             self.last_check = self.total_devices;
 
         } else if self.last_check == 0 {
@@ -79,5 +82,6 @@ async fn get_usb_devices_physical() -> Vec<String> {
 }
 
 async fn usb_alert() {
-    reboot_system().await;
+    println!("reboot!!");
+    // reboot_system().await;
 }
