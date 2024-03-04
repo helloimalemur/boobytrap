@@ -41,7 +41,7 @@ impl AppState {
                         e.check().await;
                     }
                 }
-                thread::sleep(Duration::new(0, 100000))
+                thread::sleep(Duration::new(1, 0))
             }
         }
     }

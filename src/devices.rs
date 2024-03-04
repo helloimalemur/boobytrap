@@ -5,7 +5,8 @@ use std::process::Command;
 pub struct USBMon {
     triggered: bool,
     devices: Vec<String>,
-    total_devices: i64,
+    total_devices: usize,
+    last_check: usize,
 }
 
 impl USBMon {
@@ -14,15 +15,32 @@ impl USBMon {
             triggered: false,
             devices: vec![],
             total_devices: 0,
+            last_check: 0,
         }
     }
 }
 
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
+        let new_devices = get_usb_devices_physical().await;
+        if self.last_check != 0 && self.last_check < new_devices.len() {
+            self.triggered = true;
+            self.devices = new_devices;
+            self.total_devices = self.devices.len();
+            self.last_check = self.total_devices;
+        } else if self.last_check == 0 {
+            self.devices = new_devices.clone();
+            self.total_devices = new_devices.len();
+            self.last_check = self.total_devices;
+        }
+
         println!("check usb: {}", self.triggered);
-        self.devices = get_usb_devices_physical().await;
-        println!("Total devices: {}", self.devices.len())
+        println!("Total devices: {}", self.total_devices);
+
+        if self.triggered {
+            println!("ALERT");
+            self.triggered = false;
+        }
     }
 }
 
