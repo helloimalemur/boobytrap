@@ -10,7 +10,11 @@ mod tw;
 #[tokio::main]
 async fn main() {
     let mut app = AppState::new();
-    app.monitors.push(Monitors::USBMon(USBMon::new()));
-    app.monitors.push(Monitors::NetMon(NETMon::new()));
+    // let mut binding = app.monitors.lock();
+    // let app_lock = binding.as_mut().unwrap();
+    //
+    // app_lock.push(Monitors::USBMon(USBMon::new()));
+    // app_lock.push(Monitors::NetMon(NETMon::new()));
+
     app.run().await;
 }
