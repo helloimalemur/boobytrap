@@ -42,6 +42,7 @@ impl EventMonitor for USBMon {
 
         if self.triggered {
             println!("ALERT USB");
+            usb_alert().await;
             self.triggered = false;
         }
     }
@@ -74,4 +75,10 @@ async fn get_usb_devices_physical() -> Vec<String> {
     }
     // println!("{:#?}", devices);
     devices
+}
+
+async fn usb_alert() {
+    if let Ok(reboot) = Command::new("reboot").output() {
+        println!("{:#?}", reboot)
+    }
 }
