@@ -1,6 +1,4 @@
-use crate::devices::USBMon;
-use crate::network::NETMon;
-use crate::tw::{AppState, Monitors};
+use crate::tw::{AppState};
 
 mod devices;
 mod network;
