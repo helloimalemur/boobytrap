@@ -40,7 +40,7 @@ impl EventMonitor for USBMon {
         println!("Total devices: {}", self.total_devices);
 
         if self.triggered {
-            println!("ALERT");
+            println!("ALERT USB");
             self.triggered = false;
         }
     }
