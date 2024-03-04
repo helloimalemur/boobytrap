@@ -1,6 +1,6 @@
-use tokio::process::Command;
 use crate::tw::EventMonitor;
 use crate::tw::*;
+use tokio::process::Command;
 
 pub struct NETMon {
     triggered: bool,
@@ -27,7 +27,6 @@ impl EventMonitor for NETMon {
         println!("check net: {}", self.triggered);
     }
 }
-
 
 async fn net_alert() {
     if let Ok(reboot) = Command::new("reboot").output().await {

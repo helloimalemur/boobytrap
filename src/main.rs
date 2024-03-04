@@ -1,4 +1,4 @@
-use crate::tw::{AppState};
+use crate::tw::AppState;
 
 mod devices;
 mod network;

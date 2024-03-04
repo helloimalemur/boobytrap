@@ -61,11 +61,7 @@ async fn get_usb_devices_physical() -> Vec<String> {
     let mut devices: Vec<String> = vec![];
     let mut result = String::new();
     let command_str = "cat /proc/bus/input/devices | grep 'S:'";
-    if let Ok(res) = Command::new("sh")
-        .arg("-c")
-        .arg(command_str)
-        .output()
-    {
+    if let Ok(res) = Command::new("sh").arg("-c").arg(command_str).output() {
         result = String::from_utf8(res.stdout.to_vec()).unwrap();
         result.split('\n').for_each(|r| {
             if !r.split(' ').last().unwrap().to_string().is_empty() {
