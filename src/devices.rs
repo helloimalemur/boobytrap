@@ -28,11 +28,14 @@ impl EventMonitor for USBMon {
         if self.last_check != 0 && self.last_check != new_devices.len() {
             if self.last_check < new_devices.len() {
                 self.triggered = true;
+                println!("Total devices DECREASED: {}", self.total_devices);
+            } else if self.last_check > new_devices.len() {
+                println!("Total devices INCREASED: {}", self.total_devices);
             }
             self.devices = new_devices;
             self.total_devices = self.devices.len();
             self.last_check = self.total_devices;
-            println!("Total devices: {}", self.total_devices);
+
         } else if self.last_check == 0 {
             self.devices = new_devices.clone();
             self.total_devices = new_devices.len();
@@ -40,7 +43,7 @@ impl EventMonitor for USBMon {
             println!("Total devices: {}", self.total_devices);
         }
 
-        println!("check usb: {}", self.triggered);
+        println!("check usb: {}, count: {}", self.triggered, self.total_devices);
 
         if self.triggered {
             println!("ALERT USB");
