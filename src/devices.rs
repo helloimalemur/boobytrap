@@ -82,6 +82,6 @@ async fn get_usb_devices_physical() -> Vec<String> {
 }
 
 async fn usb_alert() {
-    println!("reboot!!");
-    // reboot_system().await;
+    // println!("reboot!!"); // testing
+    reboot_system().await;
 }
