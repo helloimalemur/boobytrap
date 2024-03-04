@@ -1,18 +1,17 @@
+use crate::devices::*;
+use crate::network::*;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
-use crate::devices::*;
-use crate::network::*;
-
 
 pub enum Monitors {
     USBMon(USBMon),
-    NetMon(NETMon)
+    NetMon(NETMon),
 }
 pub struct AppState {
     pub mon_usb: bool,
     pub detection_triggered: bool,
-    pub monitors: Arc<Mutex<Vec<Monitors>>>
+    pub monitors: Arc<Mutex<Vec<Monitors>>>,
 }
 
 impl AppState {
@@ -35,14 +34,17 @@ impl AppState {
             let bind = binding.as_mut().unwrap();
             for i in bind.iter_mut() {
                 match i {
-                    Monitors::USBMon(e) => {e.check().await;}
-                    Monitors::NetMon(e) => { e.check().await;}
+                    Monitors::USBMon(e) => {
+                        e.check().await;
+                    }
+                    Monitors::NetMon(e) => {
+                        e.check().await;
+                    }
                 }
-                thread::sleep(Duration::new(0,100000))
+                thread::sleep(Duration::new(0, 100000))
             }
         }
     }
-
 }
 
 pub trait EventMonitor {
