@@ -21,7 +21,8 @@ impl USBMon {
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
         println!("check usb: {}", self.triggered);
-        get_usb_devices_physical().await;
+        self.devices = get_usb_devices_physical().await;
+        println!("Total devices: {}", self.devices.len())
     }
 }
 
@@ -34,7 +35,7 @@ async fn get_usb_devices() {
     println!("{}", result)
 }
 
-async fn get_usb_devices_physical() {
+async fn get_usb_devices_physical() -> Vec<String> {
     let mut devices: Vec<String> = vec![];
     let mut result = String::new();
     let command_str = "cat /proc/bus/input/devices | grep 'S:'";
@@ -50,5 +51,6 @@ async fn get_usb_devices_physical() {
             }
         })
     }
-    println!("{:#?}", devices)
+    println!("{:#?}", devices);
+    devices
 }
