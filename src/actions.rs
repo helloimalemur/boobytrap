@@ -14,15 +14,15 @@ pub async fn unmount_encrypted_volumes() {
             let vol_split: Vec<_> = ea.split_ascii_whitespace().collect();
             let vol = vol_split.get(0).unwrap().to_string();
             println!("{}", vol);
-            let command_str = format!("mount | grep {}", vol);
-            println!("{}", command_str);
-            // let res = Command::new("mount")
-            //     .arg("-l")
-            //     .arg("|")
-            //     .arg("grep")
-            //     .arg(vol)
-            //     .output();
-            // println!("{:#?}", res);
+            // let command_str = format!("findmnt -l | grep {}", vol);
+            // println!("{}", command_str);
+            let res = Command::new("cat")
+                .arg("/proc/mounts")
+                .arg("|")
+                .arg("grep")
+                .arg(vol)
+                .output();
+            println!("{:#?}", res);
         }
     }
 }
