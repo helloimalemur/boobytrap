@@ -1,5 +1,7 @@
 use std::io::BufRead;
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 
 pub async fn reboot_system() {
     if let Ok(reboot) = Command::new("reboot").output() {
@@ -13,8 +15,7 @@ pub async fn unmount_encrypted_volumes() {
         for ea in encrypted_vols.lines() {
             let vol_split: Vec<_> = ea.split_ascii_whitespace().collect();
             let luks_vol = vol_split.get(0).unwrap().to_string();
-            println!("{}", luks_vol);
-            // let command_str = format!("findmnt -l | grep {}", vol);
+            // println!("{}", luks_vol);
             // println!("{}", command_str);
             if let Ok(res) = Command::new("cat")
                 .arg("/proc/mounts")
@@ -25,8 +26,9 @@ pub async fn unmount_encrypted_volumes() {
                     if mount.contains(luks_vol_str) {
                         let mount_split: Vec<&str> = mount.split_ascii_whitespace().collect();
                         let vol_mount_path = mount_split.get(1).unwrap();
-                        println!("{}", vol_mount_path);
+                        // println!("{}", vol_mount_path);
                         commit_umount_volume(vol_mount_path);
+                        thread::sleep(Duration::new(1, 0));
                         commit_luks_close(luks_vol_str);
                     }
                 }
