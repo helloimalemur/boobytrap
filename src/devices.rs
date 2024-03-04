@@ -26,6 +26,7 @@ impl EventMonitor for USBMon {
         if self.last_check != 0 && self.last_check != new_devices.len() {
             if self.last_check < new_devices.len() {
                 self.triggered = true;
+                println!("Total devices: {}", self.total_devices);
             }
             self.devices = new_devices;
             self.total_devices = self.devices.len();
@@ -34,10 +35,10 @@ impl EventMonitor for USBMon {
             self.devices = new_devices.clone();
             self.total_devices = new_devices.len();
             self.last_check = self.total_devices;
+            println!("Total devices: {}", self.total_devices);
         }
 
         println!("check usb: {}", self.triggered);
-        println!("Total devices: {}", self.total_devices);
 
         if self.triggered {
             println!("ALERT USB");
@@ -52,7 +53,7 @@ async fn get_usb_devices() {
     if let Ok(res) = Command::new("sh").arg("-c").arg(command_str).output() {
         result = String::from_utf8(res.stdout.to_vec()).unwrap();
     }
-    println!("{}", result)
+    // println!("{}", result)
 }
 
 async fn get_usb_devices_physical() -> Vec<String> {
@@ -71,6 +72,6 @@ async fn get_usb_devices_physical() -> Vec<String> {
             }
         })
     }
-    println!("{:#?}", devices);
+    // println!("{:#?}", devices);
     devices
 }

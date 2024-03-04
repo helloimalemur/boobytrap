@@ -18,7 +18,7 @@ impl NETMon {
 impl EventMonitor for NETMon {
     async fn check(&mut self) {
         if let Ok(check) = httping::ping("koonts.net", "", "https", 443).await {
-            self.triggered = check
+            self.triggered = !check
         }
         if self.triggered {
             println!("ALERT NET");
