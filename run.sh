@@ -1,2 +1,2 @@
 #!/bin/bash
-cd /var/lib/tw && ./target/release/tw
+cd /var/lib/tw && ./tw
