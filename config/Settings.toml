@@ -1,3 +1,5 @@
+usb_mon_enabled = "true"
+net_mon_enabled = "false"
 reboot_on_increase_of_usb_devices = "true"
 unmount_on_increase_of_usb_devices = "true"
 umount_1 = ""

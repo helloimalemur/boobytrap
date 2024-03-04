@@ -29,8 +29,13 @@ impl AppState {
             .unwrap();
 
         let mut monitors: Vec<Monitors> = vec![];
-        monitors.push(Monitors::USBMon(USBMon::new()));
-        monitors.push(Monitors::NetMon(NETMon::new()));
+
+        if settings_map.get("usb_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+            monitors.push(Monitors::USBMon(USBMon::new()));
+        }
+        if settings_map.get("net_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+            monitors.push(Monitors::NetMon(NETMon::new()));
+        }
 
         AppState {
             mon_usb: true,
