@@ -47,10 +47,10 @@ impl AppState {
             for i in bind.iter_mut() {
                 match i {
                     Monitors::USBMon(e) => {
-                        e.check().await;
+                        e.check(self.settings_map.clone()).await;
                     }
                     Monitors::NetMon(e) => {
-                        e.check().await;
+                        e.check(self.settings_map.clone()).await;
                     }
                 }
                 thread::sleep(Duration::new(1, 0))
@@ -60,5 +60,5 @@ impl AppState {
 }
 
 pub trait EventMonitor {
-    async fn check(&mut self);
+    async fn check(&mut self, sm: HashMap<String, String>);
 }

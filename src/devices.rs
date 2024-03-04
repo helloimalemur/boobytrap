@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::tw::EventMonitor;
 use crate::tw::*;
 use std::process::Command;
@@ -21,7 +22,7 @@ impl USBMon {
 }
 
 impl EventMonitor for USBMon {
-    async fn check(&mut self) {
+    async fn check(&mut self, settings_map: HashMap<String, String>) {
         let new_devices = get_usb_devices_physical().await;
         if self.last_check != 0 && self.last_check != new_devices.len() {
             if self.last_check < new_devices.len() {
