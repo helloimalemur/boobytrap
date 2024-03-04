@@ -58,7 +58,7 @@ impl AppState {
                         e.check(self.settings_map.clone()).await;
                     }
                 }
-                thread::sleep(Duration::new(0, 1000000000))
+                thread::sleep(Duration::new(0, 500000000))
             }
         }
     }
