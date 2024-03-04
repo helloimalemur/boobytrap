@@ -23,20 +23,20 @@ impl AppState {
         }
     }
 
-    pub fn run(&self) {
+    pub async fn run(&self) {
         loop {
             for i in self.monitors.iter() {
                 match i {
-                    Monitors::USBMon(e) => { e.check() }
-                    Monitors::NetMon(e) => {e.check()}
+                    Monitors::USBMon(e) => {e.check().await;}
+                    Monitors::NetMon(e) => { e.check().await;}
                 }
+                thread::sleep(Duration::new(0,100000))
             }
-            thread::sleep(Duration::new(1,0))
         }
     }
 
 }
 
 pub trait EventMonitor {
-    fn check(&self);
+    async fn check(&self);
 }

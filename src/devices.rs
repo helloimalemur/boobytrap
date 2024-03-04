@@ -14,7 +14,7 @@ impl USBMon {
 }
 
 impl EventMonitor for USBMon {
-    fn check(&self) {
+    async fn check(&self) {
         println!("check usb");
     }
 }

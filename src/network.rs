@@ -14,7 +14,8 @@ impl NETMon {
 }
 
 impl EventMonitor for NETMon {
-    fn check(&self) {
+    async fn check(&self) {
         println!("check net");
+        let check = httping::ping("koonts.net", "", "https", 443).await;
     }
 }

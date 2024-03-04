@@ -7,9 +7,10 @@ mod network;
 mod tw;
 
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let mut app = AppState::new();
     app.monitors.push(Monitors::USBMon(USBMon::new()));
     app.monitors.push(Monitors::NetMon(NETMon::new()));
-    app.run();
+    app.run().await;
 }
