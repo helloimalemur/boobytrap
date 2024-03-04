@@ -4,13 +4,15 @@ use crate::devices::*;
 
 
 
-trait_enum!{
-    pub enum Monitors: EventMonitor {
-        USBMon
-    }
+// trait_enum!{
+//     pub enum Monitors: EventMonitor {
+//         USBMon
+//     }
+// }
+
+pub enum Monitors {
+    USBMon(USBMon)
 }
-
-
 pub struct AppState {
     pub mon_usb: bool,
     pub detection_triggered: bool,
@@ -28,7 +30,9 @@ impl AppState {
 
     pub fn run(&self) {
         for i in self.monitors.iter() {
-            i.check();
+            match i {
+                Monitors::USBMon(e) => {e.check()}
+            }
         }
     }
 
