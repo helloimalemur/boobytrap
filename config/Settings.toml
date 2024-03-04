@@ -1,5 +1,13 @@
+### Enable Monitors
 usb_mon_enabled = "true"
 net_mon_enabled = "false"
+## USB Monitor
 reboot_on_increase_of_usb_devices = "true"
+### UnMount Drives (cryptsetup+)
 unmount_crypt_on_increase_of_usb_devices = "true"
 umount_drives_1 = ""
+### Check Burn File
+ssh_check_burn_host = ""
+ssh_check_burn_user = ""
+ssh_check_burn_key = ""
+ssh_check_burn_path = ""
