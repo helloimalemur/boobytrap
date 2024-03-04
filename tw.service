@@ -1,0 +1,11 @@
+[Unit]
+Description=TripWire
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/var/lib/tw/run.sh
+
+[Install]
+WantedBy=multi-user.target
