@@ -7,6 +7,6 @@ mod tw;
 
 fn main() {
     let mut app = AppState::new();
-    app.monitors.push(Monitors::USB(USBMon::new()));
+    app.monitors.push(Monitors::USBMon(USBMon::new()));
     app.run();
 }

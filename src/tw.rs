@@ -1,8 +1,15 @@
+use trait_enum::trait_enum;
+#[macro_use]
 use crate::devices::*;
 
-pub enum Monitors {
-    USB(USBMon)
+
+
+trait_enum!{
+    pub enum Monitors: EventMonitor {
+        USBMon
+    }
 }
+
 
 pub struct AppState {
     pub mon_usb: bool,
@@ -31,8 +38,8 @@ pub trait EventMonitor {
     fn check(&self);
 }
 
-impl EventMonitor for Monitors {
-    fn check(&self) {
-        println!("check");
-    }
-}
+// impl EventMonitor for Monitors {
+//     fn check(&self) {
+//         println!("check");
+//     }
+// }
