@@ -1,11 +1,12 @@
 use std::thread;
 use std::time::Duration;
-use trait_enum::trait_enum;
-#[macro_use]
 use crate::devices::*;
+use crate::network::*;
+
 
 pub enum Monitors {
-    USBMon(USBMon)
+    USBMon(USBMon),
+    NetMon(NETMon)
 }
 pub struct AppState {
     pub mon_usb: bool,
@@ -27,6 +28,7 @@ impl AppState {
             for i in self.monitors.iter() {
                 match i {
                     Monitors::USBMon(e) => { e.check() }
+                    Monitors::NetMon(e) => {e.check()}
                 }
             }
             thread::sleep(Duration::new(1,0))
