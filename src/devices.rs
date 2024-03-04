@@ -26,11 +26,11 @@ impl EventMonitor for USBMon {
         if self.last_check != 0 && self.last_check != new_devices.len() {
             if self.last_check < new_devices.len() {
                 self.triggered = true;
-                println!("Total devices: {}", self.total_devices);
             }
             self.devices = new_devices;
             self.total_devices = self.devices.len();
             self.last_check = self.total_devices;
+            println!("Total devices: {}", self.total_devices);
         } else if self.last_check == 0 {
             self.devices = new_devices.clone();
             self.total_devices = new_devices.len();
