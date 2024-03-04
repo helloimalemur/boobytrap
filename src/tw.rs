@@ -37,9 +37,3 @@ impl AppState {
 pub trait EventMonitor {
     fn check(&self);
 }
-
-// impl EventMonitor for Monitors {
-//     fn check(&self) {
-//         println!("check");
-//     }
-// }
