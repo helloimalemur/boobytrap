@@ -1,14 +1,8 @@
+use std::thread;
+use std::time::Duration;
 use trait_enum::trait_enum;
 #[macro_use]
 use crate::devices::*;
-
-
-
-// trait_enum!{
-//     pub enum Monitors: EventMonitor {
-//         USBMon
-//     }
-// }
 
 pub enum Monitors {
     USBMon(USBMon)
@@ -29,10 +23,13 @@ impl AppState {
     }
 
     pub fn run(&self) {
-        for i in self.monitors.iter() {
-            match i {
-                Monitors::USBMon(e) => {e.check()}
+        loop {
+            for i in self.monitors.iter() {
+                match i {
+                    Monitors::USBMon(e) => { e.check() }
+                }
             }
+            thread::sleep(Duration::new(1,0))
         }
     }
 
