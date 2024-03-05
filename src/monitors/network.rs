@@ -24,11 +24,12 @@ impl EventMonitor for NETMon {
         }
         if self.triggered {
             println!("ALERT NET");
+            net_alert(settings_map).await;
         }
         println!("check net: {}", self.triggered);
     }
 }
 
-async fn net_alert() {
-    reboot_system().await;
+async fn net_alert(settings_map: HashMap<String, String>) {
+    reboot_system(settings_map).await;
 }

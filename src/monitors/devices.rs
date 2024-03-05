@@ -50,7 +50,7 @@ impl EventMonitor for USBMon {
 
         if self.triggered {
             println!("ALERT USB");
-            usb_alert().await;
+            usb_alert(settings_map).await;
             self.triggered = false;
         }
     }
@@ -81,7 +81,7 @@ async fn get_usb_devices_physical() -> Vec<String> {
     devices
 }
 
-async fn usb_alert() {
+async fn usb_alert(settings_map: HashMap<String, String>) {
     // println!("reboot!!"); // testing
-    reboot_system().await;
+    reboot_system(settings_map).await;
 }

@@ -1,9 +1,12 @@
+use std::collections::HashMap;
 use std::io::BufRead;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
+use crate::monitors::notify::send_discord;
 
-pub async fn reboot_system() {
+pub async fn reboot_system(settings_map: HashMap<String, String>) {
+    let _res = send_discord("System rebooting", settings_map).await;
     if let Ok(reboot) = Command::new("reboot").output() {
         println!("{:#?}", reboot)
     }
