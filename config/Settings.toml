@@ -9,6 +9,7 @@ ssh_check_burn_host = "v1a"
 ssh_check_burn_user = "root"
 ssh_check_burn_key = "/home/foxx/.ssh/id_ed25519_012924"
 ssh_check_burn_path = "/root/.cache/burn"
+ssh_check_burn_check_interval = "30"
 burn_path_1 = "/root/test/"
 
 ### Network Monitor
