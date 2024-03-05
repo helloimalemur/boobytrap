@@ -5,10 +5,12 @@ use std::thread;
 use std::time::Duration;
 use crate::monitors::devices::USBMon;
 use crate::monitors::network::NETMon;
+use crate::monitors::ssh_burn_file::SSHBurnMon;
 
 pub enum Monitors {
     USBMon(USBMon),
     NetMon(NETMon),
+    SSHBurnMon(SSHBurnMon)
 }
 pub struct AppState {
     pub mon_usb: bool,
@@ -36,6 +38,9 @@ impl AppState {
         if settings_map.get("net_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
             monitors.push(Monitors::NetMon(NETMon::new(settings_map.clone())));
         }
+        if settings_map.get("burn_file_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+            monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings_map.clone())));
+        }
 
         AppState {
             mon_usb: true,
@@ -55,6 +60,9 @@ impl AppState {
                         e.check().await;
                     }
                     Monitors::NetMon(e) => {
+                        e.check().await;
+                    }
+                    Monitors::SSHBurnMon(e) => {
                         e.check().await;
                     }
                 }
