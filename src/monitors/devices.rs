@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use crate::tw::EventMonitor;
-use crate::actions::*;
 use crate::tw::*;
 use std::process::Command;
+use crate::monitors::actions::reboot_system;
 
 pub struct USBMon {
     triggered: bool,

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::tw::EventMonitor;
 use crate::tw::*;
-use crate::actions::reboot_system;
+use crate::monitors::actions::reboot_system;
 
 pub struct NETMon {
     triggered: bool,
