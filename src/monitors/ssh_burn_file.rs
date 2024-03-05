@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::fmt::format;
 use std::process::Command;
 use chrono::{DateTime, Utc};
+use crate::monitors::actions::unmount_encrypted_volumes;
 use crate::tw::EventMonitor;
 
 pub struct SSHBurnMon {
@@ -15,7 +16,9 @@ impl SSHBurnMon {
         SSHBurnMon { triggered: false, settings_map, last_check: Utc::now() }
     }
     async fn ssh_burn_triggered(&self) {
-        todo!()
+        if self.settings_map.get("unmount_crypt_on_file_burn").unwrap().eq_ignore_ascii_case("true") {
+            unmount_encrypted_volumes().await;
+        }
     }
 }
 
