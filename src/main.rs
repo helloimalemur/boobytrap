@@ -2,7 +2,6 @@ use crate::tw::AppState;
 
 mod tw;
 mod monitors;
-mod notify;
 
 
 #[tokio::main]

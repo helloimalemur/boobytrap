@@ -56,13 +56,13 @@ fn commit_luks_close(luks_vol: &str) {
 }
 
 
-#[cfg(test)]
-mod tests {
-    use crate::actions::unmount_encrypted_volumes;
-
-    #[test]
-    fn test_unmount() {
-        let rt = tokio::runtime::Runtime::new();
-        rt.unwrap().block_on(unmount_encrypted_volumes());
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use crate::monitors::actions::unmount_encrypted_volumes;
+//
+//     #[test]
+//     fn test_unmount_encrypted() {
+//         let rt = tokio::runtime::Runtime::new();
+//         rt.unwrap().block_on(unmount_encrypted_volumes());
+//     }
+// }

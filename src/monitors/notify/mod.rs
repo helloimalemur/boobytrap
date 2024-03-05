@@ -7,3 +7,19 @@ pub async fn send_discord(message: &str, settings_map: HashMap<String, String>) 
 }
 
 // pub async fn send_email() {}
+
+
+// #[cfg(test)]
+// mod tests {
+//     use discord_webhook_lib::send_discord;
+//
+//     #[test]
+//     fn test_send_wh() {
+//         let rt = tokio::runtime::Runtime::new();
+//         rt.unwrap().block_on(send_discord(
+//             "https://discord.com/api/webhooks/1014319311197847593/jjY11oRqtES_FS7lz330mqi_4rSl-zA_rNvcg2yDySriqStqmuZtntLsF8dKY1sQvrEW",
+//             "Hello World",
+//             "Lazarus"
+//         )).unwrap();
+//     }
+// }
