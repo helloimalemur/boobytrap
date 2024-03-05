@@ -85,8 +85,8 @@ async fn get_usb_devices_physical() -> Vec<String> {
 }
 
 async fn usb_triggered(settings_map: HashMap<String, String>) {
+    let _ = send_discord("USB triggered", settings_map.clone()).await;
     if settings_map.get("reboot_on_increase_of_usb_devices").unwrap().eq_ignore_ascii_case("true") {
         reboot_system(settings_map.clone()).await;
     }
-    let _ = send_discord("USB triggered", settings_map.clone()).await;
 }
