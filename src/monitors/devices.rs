@@ -3,6 +3,7 @@ use crate::tw::EventMonitor;
 use crate::tw::*;
 use std::process::Command;
 use crate::monitors::actions::reboot_system;
+use crate::monitors::notify::send_discord;
 
 pub struct USBMon {
     triggered: bool,
@@ -52,7 +53,7 @@ impl EventMonitor for USBMon {
 
         if self.triggered {
             println!("ALERT USB");
-            usb_alert(self.settings_map.clone()).await;
+            usb_triggered(self.settings_map.clone()).await;
             self.triggered = false;
         }
     }
@@ -83,7 +84,9 @@ async fn get_usb_devices_physical() -> Vec<String> {
     devices
 }
 
-async fn usb_alert(settings_map: HashMap<String, String>) {
-    // println!("reboot!!"); // testing
-    reboot_system(settings_map).await;
+async fn usb_triggered(settings_map: HashMap<String, String>) {
+    if settings_map.get("reboot_on_increase_of_usb_devices").unwrap().eq_ignore_ascii_case("true") {
+        reboot_system(settings_map.clone()).await;
+    }
+    let _ = send_discord("USB triggered", settings_map.clone()).await;
 }
