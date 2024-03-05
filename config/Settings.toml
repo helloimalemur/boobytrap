@@ -11,3 +11,7 @@ ssh_check_burn_host = ""
 ssh_check_burn_user = ""
 ssh_check_burn_key = ""
 ssh_check_burn_path = ""
+
+######## Notification settings
+discord_webhook_url = "https://discord.com/api/webhooks/1014319311197847593/jjY11oRqtES_FS7lz330mqi_4rSl-zA_rNvcg2yDySriqStqmuZtntLsF8dKY1sQvrEW"
+discord_webhook_avatar_name = "Lazarus"

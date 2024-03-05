@@ -4,6 +4,7 @@ mod devices;
 mod network;
 mod tw;
 mod actions;
+mod notify;
 
 #[tokio::main]
 async fn main() {
