@@ -1,10 +1,10 @@
 use crate::tw::AppState;
 
-mod devices;
-mod network;
 mod tw;
+mod monitors;
 mod actions;
 mod notify;
+
 
 #[tokio::main]
 async fn main() {

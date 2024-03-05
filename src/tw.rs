@@ -1,10 +1,10 @@
-use crate::devices::*;
-use crate::network::*;
 use config::Config;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
+use crate::monitors::devices::USBMon;
+use crate::monitors::network::NETMon;
 
 pub enum Monitors {
     USBMon(USBMon),
