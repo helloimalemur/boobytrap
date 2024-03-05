@@ -7,11 +7,11 @@ reboot_on_increase_of_usb_devices = "false"
 unmount_crypt_on_increase_of_usb_devices = "true"
 umount_drives_1 = ""
 ### Check Burn File
-ssh_check_burn_host = ""
-ssh_check_burn_user = ""
-ssh_check_burn_key = ""
-ssh_check_burn_path = ""
-
+ssh_check_burn_host = "v1a"
+ssh_check_burn_user = "root"
+ssh_check_burn_key = "/home/foxx/.ssh/id_ed25519_012924"
+ssh_check_burn_path = "/root/.cache/burn"
+burn_path_1 = "/root/test/"
 ######## Notification settings
 discord_webhook_url = "https://discord.com/api/webhooks/1014319311197847593/jjY11oRqtES_FS7lz330mqi_4rSl-zA_rNvcg2yDySriqStqmuZtntLsF8dKY1sQvrEW"
 discord_webhook_avatar_name = "Lazarus"
