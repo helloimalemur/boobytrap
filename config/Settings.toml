@@ -2,7 +2,7 @@
 usb_mon_enabled = "true"
 net_mon_enabled = "false"
 ## USB Monitor
-reboot_on_increase_of_usb_devices = "true"
+reboot_on_increase_of_usb_devices = "false"
 ### UnMount Drives (cryptsetup+)
 unmount_crypt_on_increase_of_usb_devices = "true"
 umount_drives_1 = ""
