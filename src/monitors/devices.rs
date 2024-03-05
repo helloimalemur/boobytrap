@@ -9,21 +9,23 @@ pub struct USBMon {
     devices: Vec<String>,
     total_devices: usize,
     last_check: usize,
+    settings_map: HashMap<String, String>,
 }
 
 impl USBMon {
-    pub fn new() -> Self {
+    pub fn new(settings_map: HashMap<String, String>) -> Self {
         USBMon {
             triggered: false,
             devices: vec![],
             total_devices: 0,
             last_check: 0,
+            settings_map
         }
     }
 }
 
 impl EventMonitor for USBMon {
-    async fn check(&mut self, settings_map: HashMap<String, String>) {
+    async fn check(&mut self) {
         let new_devices = get_usb_devices_physical().await;
 
         if self.last_check != 0 && self.last_check != new_devices.len() {
@@ -50,7 +52,7 @@ impl EventMonitor for USBMon {
 
         if self.triggered {
             println!("ALERT USB");
-            usb_alert(settings_map).await;
+            usb_alert(self.settings_map.clone()).await;
             self.triggered = false;
         }
     }

@@ -31,10 +31,10 @@ impl AppState {
         let mut monitors: Vec<Monitors> = vec![];
 
         if settings_map.get("usb_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
-            monitors.push(Monitors::USBMon(USBMon::new()));
+            monitors.push(Monitors::USBMon(USBMon::new(settings_map.clone())));
         }
         if settings_map.get("net_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
-            monitors.push(Monitors::NetMon(NETMon::new()));
+            monitors.push(Monitors::NetMon(NETMon::new(settings_map.clone())));
         }
 
         AppState {
@@ -52,10 +52,10 @@ impl AppState {
             for i in bind.iter_mut() {
                 match i {
                     Monitors::USBMon(e) => {
-                        e.check(self.settings_map.clone()).await;
+                        e.check().await;
                     }
                     Monitors::NetMon(e) => {
-                        e.check(self.settings_map.clone()).await;
+                        e.check().await;
                     }
                 }
                 thread::sleep(Duration::new(0, 500000000))
@@ -65,5 +65,5 @@ impl AppState {
 }
 
 pub trait EventMonitor {
-    async fn check(&mut self, sm: HashMap<String, String>);
+    async fn check(&mut self);
 }
