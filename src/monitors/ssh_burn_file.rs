@@ -14,6 +14,9 @@ impl SSHBurnMon {
     pub fn new(settings_map: HashMap<String, String>) -> Self {
         SSHBurnMon { triggered: false, settings_map, last_check: Utc::now() }
     }
+    async fn ssh_burn_triggered(&self) {
+        todo!()
+    }
 }
 
 impl EventMonitor for SSHBurnMon {
@@ -32,7 +35,10 @@ impl EventMonitor for SSHBurnMon {
                 .arg(addr)
                 .arg(command_str)
                 .output() {
-                println!("{}", String::from_utf8(result.stdout).unwrap().trim())
+                let burn_contents = String::from_utf8(result.stdout).unwrap();
+                if burn_contents.eq_ignore_ascii_case("burn") {
+                    self.ssh_burn_triggered().await;
+                }
             }
             self.last_check = Utc::now();
         }
