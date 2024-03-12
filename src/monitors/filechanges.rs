@@ -33,6 +33,8 @@ impl FileChanges {
             file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3));
         }
 
+        println!("{:#?}", file_changes.snapshots);
+
         file_changes
     }
 }
@@ -41,15 +43,20 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        if !compare_snapshots(self.settings_map.clone()) {
-            self.triggered = true
+        if self.step > 10 {
+            if !compare_snapshots(self.settings_map.clone()) {
+                self.triggered = true
+            }
+            if self.triggered {
+                println!("File Change Alert!");
+                fs_changes_alert(self.settings_map.clone()).await;
+                let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+            }
+            println!("check fs changes: {}", self.triggered);
+            self.step = 0;
+        } else {
+            self.step += 1;
         }
-        if self.triggered {
-            println!("File Change Alert!");
-            fs_changes_alert(self.settings_map.clone()).await;
-            let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
-        }
-        println!("check fs changes: {}", self.triggered);
     }
 }
 
