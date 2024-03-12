@@ -4,13 +4,15 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 use crate::monitors::devices::USBMon;
+use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
 
 pub enum Monitors {
     USBMon(USBMon),
     NetMon(NETMon),
-    SSHBurnMon(SSHBurnMon)
+    SSHBurnMon(SSHBurnMon),
+    FileChanges(FileChanges)
 }
 pub struct AppState {
     pub mon_usb: bool,
@@ -42,6 +44,10 @@ impl AppState {
             monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings_map.clone())));
         }
 
+        if settings_map.get("fs_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+            monitors.push(Monitors::FileChanges(FileChanges::new(settings_map.clone())));
+        }
+
         AppState {
             mon_usb: true,
             detection_triggered: false,
@@ -63,6 +69,9 @@ impl AppState {
                         e.check().await;
                     }
                     Monitors::SSHBurnMon(e) => {
+                        e.check().await;
+                    }
+                    Monitors::FileChanges(e) => {
                         e.check().await;
                     }
                 }
