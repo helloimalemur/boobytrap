@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use Fasching::create_snapshot;
 use Fasching::snapshot::Snapshot;
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
