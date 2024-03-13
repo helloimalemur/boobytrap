@@ -50,15 +50,11 @@ impl EventMonitor for FileChanges {
             println!("check fs changes: {}", self.triggered);
 
             if !compare_snapshots(self, self.settings_map.clone()).await {
-                self.triggered = true
-            }
-
-            if self.triggered {
                 println!("File Change Alert!");
                 // fs_changes_alert(, self.settings_map.clone()).await;
-                let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+                // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
             }
-
+            self.triggered = false;
             self.step = 0;
         } else {
             self.step += 1;
@@ -97,7 +93,7 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
             Ok(mut last_lock) => {
 
                 // for each entry in the hash list
-                for last_entry in last_lock.iter_mut() {
+                for last_entry in last_lock.iter() {
 
                     // check for deletion
                     if !Path::new(last_entry.0).exists() {
@@ -110,30 +106,17 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                     match current.file_hashes.lock() {
                         Ok(curr_lock) => {
 
+
                             match curr_lock.get(last_entry.0) {
                                 Some(new_entry) => {
-
-                                    // check for file creations
-                                    if !last_lock.contains_key(new_entry.path.as_str()) {
-                                        created.push(new_entry.path.to_string());
-                                        file_changes.triggered = true;
-                                        let message = format!("File Creation Detected: {}", new_entry.path.as_str());
-                                        fs_changes_alert(message, settings_map.clone()).await
-                                    }
-
 
                                     // check for mis-matching checksum
                                     if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
                                         file_changes.triggered = true;
-                                        let message = format!("File Checksum Changes: {}, {}", new_entry.path, new_entry.mtime);
+                                        let message = format!("File Checksum Change: {}, {}", new_entry.path, new_entry.mtime);
                                         fs_changes_alert(message, settings_map.clone()).await
                                     }
 
-
-                                    // } else {
-                                    //     println!("check sum check passed");
-                                    //     println!("{}: {}", new_entry.size, new_entry.path);
-                                    // }
                                 }
                                 None => {success = false}
                             }
@@ -149,6 +132,22 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
             Err(_) => {success = false}
         }
 
+        match current.file_hashes.lock() {
+            Ok(e) => {
+                for new_entry in e.iter() {
+                    // check for file creations
+                    if last.file_hashes.lock().unwrap().get(new_entry.0).is_none() {
+                        created.push(new_entry.0.to_string());
+                        file_changes.triggered = true;
+                        let message = format!("File Creation Detected: {}", new_entry.0);
+                        fs_changes_alert(message, settings_map.clone()).await;
+                    }
+
+                }
+            }
+            Err(_) => {}
+        }
+
 
         file_changes.snapshots.push(current)
     }
@@ -159,5 +158,6 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
 
 
 async fn fs_changes_alert(message: String, settings_map: HashMap<String, String>) {
+    println!("{}", message);
     let _ = send_discord(message.as_str(), settings_map).await;
 }
