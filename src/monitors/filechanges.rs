@@ -34,7 +34,7 @@ impl FileChanges {
             file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3));
         }
 
-        println!("{:#?}", file_changes.snapshots);
+        // println!("{:#?}", file_changes.snapshots);
 
         file_changes
     }
