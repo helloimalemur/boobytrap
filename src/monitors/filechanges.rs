@@ -85,6 +85,7 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
     let mut success = true;
     let mut created: Vec<String> = vec![];
     let mut deleted: Vec<String> = vec![];
+    let mut changed: Vec<String> = vec![];
 
     if let Some(last) = file_changes.snapshots.pop() {
         let current = create_snapshot(last.root_path.as_str(), last.hash_type);
@@ -113,6 +114,7 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                                     // check for mis-matching checksum
                                     if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
                                         file_changes.triggered = true;
+                                        changed.push(new_entry.path.to_string());
                                         let message = format!("File Checksum Change: {}, {}", new_entry.path, new_entry.mtime);
                                         fs_changes_alert(message, settings_map.clone()).await
                                     }
