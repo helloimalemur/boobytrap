@@ -49,10 +49,13 @@ impl EventMonitor for FileChanges {
         if self.step > 10 {
             println!("check fs changes: {}", self.triggered);
 
-            if !compare_snapshots(self, self.settings_map.clone()).await {
-                println!("File Change Alert!");
-                // fs_changes_alert(, self.settings_map.clone()).await;
-                // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+            match compare_snapshots(self, self.settings_map.clone()).await {
+                None => {}
+                Some(ret) => {
+                    println!("File Change Alert!\n{:#?}", ret);
+                    // fs_changes_alert(, self.settings_map.clone()).await;
+                    // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+                }
             }
             self.triggered = false;
             self.step = 0;
@@ -81,7 +84,14 @@ fn get_hash_type(settings_map: HashMap<String, String>) -> HashType {
     }
 }
 
-async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> bool {
+#[derive(Debug)]
+pub struct SnapshotCompareResult {
+    created: Vec<String>,
+    deleted: Vec<String>,
+    changed: Vec<String>
+}
+
+async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> Option<SnapshotCompareResult> {
     let mut success = true;
     let mut created: Vec<String> = vec![];
     let mut deleted: Vec<String> = vec![];
@@ -155,7 +165,11 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
     }
 
     println!("TOTAL SNAPSHOTS: {:#?}", file_changes.snapshots.len());
-    success
+    Some(SnapshotCompareResult {
+        created,
+        deleted,
+        changed,
+    })
 }
 
 
