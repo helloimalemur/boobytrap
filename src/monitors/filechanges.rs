@@ -55,19 +55,19 @@ impl EventMonitor for FileChanges {
                     match e.0 {
                         SnapshotChangeType::None => {}
                         SnapshotChangeType::Created => {
-                            println!("File Change Alert!\n{:#?}", e.1);
-                            // fs_changes_alert(, self.settings_map.clone()).await;
-                            // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+                            println!("File Created Alert!\n{:#?}", e.1);
+                            let message = format!("File Creation Detected: {:?}", e.1.created);
+                            fs_changes_alert(message, self.settings_map.clone()).await
                         }
                         SnapshotChangeType::Deleted => {
-                            println!("File Change Alert!\n{:#?}", e.1);
-                            // fs_changes_alert(, self.settings_map.clone()).await;
-                            // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+                            println!("File Deleted Alert!\n{:#?}", e.1);
+                            let message = format!("File Deletion Detected: {:?}", e.1.deleted);
+                            fs_changes_alert(message, self.settings_map.clone()).await
                         }
                         SnapshotChangeType::Changed => {
                             println!("File Change Alert!\n{:#?}", e.1);
-                            // fs_changes_alert(, self.settings_map.clone()).await;
-                            // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
+                            let message = format!("File Change Detected: {:?}", e.1.changed);
+                            fs_changes_alert(message, self.settings_map.clone()).await
                         }
                     }
                 }
@@ -133,8 +133,6 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                     if !Path::new(last_entry.0).exists() {
                         deleted.push(last_entry.0.to_string());
                         file_changes.triggered = true;
-                        let message = format!("File Deletion Detected: {}", last_entry.0);
-                        fs_changes_alert(message, settings_map.clone()).await
                     }
 
                     match current.file_hashes.lock() {
