@@ -161,15 +161,16 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
         }
 
 
-        file_changes.snapshots.push(current)
+        file_changes.snapshots.push(current);
+        println!("TOTAL SNAPSHOTS: {:#?}", file_changes.snapshots.len());
+        Some(SnapshotCompareResult {
+            created,
+            deleted,
+            changed,
+        })
+    } else {
+        None
     }
-
-    println!("TOTAL SNAPSHOTS: {:#?}", file_changes.snapshots.len());
-    Some(SnapshotCompareResult {
-        created,
-        deleted,
-        changed,
-    })
 }
 
 
