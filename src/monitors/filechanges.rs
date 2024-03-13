@@ -72,7 +72,7 @@ impl EventMonitor for FileChanges {
                     }
                 }
             }
-            }
+
             self.triggered = false;
             self.step = 0;
         } else {
