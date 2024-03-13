@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::fs;
+use std::path::Path;
 use std::sync::LockResult;
 use Fasching::create_snapshot;
 use Fasching::hasher::HashType;
@@ -85,24 +87,49 @@ fn get_hash_type(settings_map: HashMap<String, String>) -> HashType {
 
 async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> bool {
     let mut success = true;
+    let mut created: Vec<String> = vec![];
+    let mut deleted: Vec<String> = vec![];
+
     if let Some(last) = file_changes.snapshots.pop() {
         let current = create_snapshot(last.root_path.as_str(), last.hash_type);
 
         match last.file_hashes.lock() {
-            Ok(last_lock) => {
+            Ok(mut last_lock) => {
 
-                for last_entry in last_lock.iter() {
+                // for each entry in the hash list
+                for last_entry in last_lock.iter_mut() {
+
+                    // check for deletion
+                    if !Path::new(last_entry.0).exists() {
+                        deleted.push(last_entry.0.to_string());
+                        file_changes.triggered = true;
+                        let message = format!("File Deletion Detected: {}", last_entry.0);
+                        fs_changes_alert(message, settings_map.clone()).await
+                    }
 
                     match current.file_hashes.lock() {
                         Ok(curr_lock) => {
 
                             match curr_lock.get(last_entry.0) {
                                 Some(new_entry) => {
-                                    if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
+
+                                    // check for file creations
+                                    if !last_lock.contains_key(new_entry.path.as_str()) {
+                                        created.push(new_entry.path.to_string());
                                         file_changes.triggered = true;
-                                        let message = format!("File Changes: {}, {}", new_entry.path, new_entry.mtime);
+                                        let message = format!("File Creation Detected: {}", new_entry.path.as_str());
                                         fs_changes_alert(message, settings_map.clone()).await
                                     }
+
+
+                                    // check for mis-matching checksum
+                                    if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
+                                        file_changes.triggered = true;
+                                        let message = format!("File Checksum Changes: {}, {}", new_entry.path, new_entry.mtime);
+                                        fs_changes_alert(message, settings_map.clone()).await
+                                    }
+
+
                                     // } else {
                                     //     println!("check sum check passed");
                                     //     println!("{}: {}", new_entry.size, new_entry.path);
@@ -129,6 +156,7 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
     println!("TOTAL SNAPSHOTS: {:#?}", file_changes.snapshots.len());
     success
 }
+
 
 async fn fs_changes_alert(message: String, settings_map: HashMap<String, String>) {
     let _ = send_discord(message.as_str(), settings_map).await;
