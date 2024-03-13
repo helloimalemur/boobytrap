@@ -6,7 +6,7 @@ fs_mon_hash_type = "blake3"
 ### USB Monitor
 usb_mon_enabled = "true"
 reboot_on_increase_of_usb_devices = "false"
-notify_on_increase_of_usb_devices = "false"
+notify_on_increase_of_usb_devices = "true"
 unmount_crypt_on_increase_of_usb_devices = "true"
 
 ### Burn File Monitor
