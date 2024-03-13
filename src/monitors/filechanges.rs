@@ -123,7 +123,7 @@ async fn compare(file_changes: &mut FileChanges, settings_map: HashMap<String, S
     let mut to_remove: Vec<usize> = vec![];
     let mut new_sn: Vec<Snapshot> = vec![];
 
-    for (ind, i) in file_changes.snapshots.iter_mut().enumerate() {
+    for (ind, i) in file_changes.snapshots.iter().enumerate() {
         let new = Snapshot::new(i.root_path.as_ref(), i.hash_type);
 
         if let Some(res) = compare_snapshots(i.clone(), new.clone()) {
@@ -150,9 +150,11 @@ async fn compare(file_changes: &mut FileChanges, settings_map: HashMap<String, S
         new_sn.push(new.clone());
     }
 
-    for i in to_remove {
-        file_changes.snapshots.remove(i);
-    }
+    file_changes.snapshots.clear();
+
+    // for i in to_remove {
+    //     file_changes.snapshots.remove(i);
+    // }
 
     for i in new_sn {
         file_changes.snapshots.push(i)
