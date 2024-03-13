@@ -55,17 +55,17 @@ impl EventMonitor for FileChanges {
                     match e.0 {
                         SnapshotChangeType::None => {}
                         SnapshotChangeType::Created => {
-                            println!("File Change Alert!\n{:#?}", ret);
+                            println!("File Change Alert!\n{:#?}", e.1);
                             // fs_changes_alert(, self.settings_map.clone()).await;
                             // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
                         }
                         SnapshotChangeType::Deleted => {
-                            println!("File Change Alert!\n{:#?}", ret);
+                            println!("File Change Alert!\n{:#?}", e.1);
                             // fs_changes_alert(, self.settings_map.clone()).await;
                             // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
                         }
                         SnapshotChangeType::Changed => {
-                            println!("File Change Alert!\n{:#?}", ret);
+                            println!("File Change Alert!\n{:#?}", e.1);
                             // fs_changes_alert(, self.settings_map.clone()).await;
                             // let _ = send_discord("File Change Alert!!", self.settings_map.clone()).await;
                         }
