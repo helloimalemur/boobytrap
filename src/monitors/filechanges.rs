@@ -146,8 +146,6 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                                     if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
                                         file_changes.triggered = true;
                                         changed.push(new_entry.path.to_string());
-                                        let message = format!("File Checksum Change: {}, {}", new_entry.path, new_entry.mtime);
-                                        fs_changes_alert(message, settings_map.clone()).await
                                     }
 
                                 }
@@ -172,8 +170,6 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                     if last.file_hashes.lock().unwrap().get(new_entry.0).is_none() {
                         created.push(new_entry.0.to_string());
                         file_changes.triggered = true;
-                        let message = format!("File Creation Detected: {}", new_entry.0);
-                        fs_changes_alert(message, settings_map.clone()).await;
                     }
                 }
             }
