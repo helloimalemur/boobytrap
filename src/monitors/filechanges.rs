@@ -102,10 +102,11 @@ async fn compare_snapshots(file_changes: &mut FileChanges, settings_map: HashMap
                                         file_changes.triggered = true;
                                         let message = format!("File Changes: {}, {}", new_entry.path, new_entry.mtime);
                                         fs_changes_alert(message, settings_map.clone()).await
-                                    } else {
-                                        println!("check sum check passed");
-                                        println!("{}: {}", new_entry.size, new_entry.path);
                                     }
+                                    // } else {
+                                    //     println!("check sum check passed");
+                                    //     println!("{}: {}", new_entry.size, new_entry.path);
+                                    // }
                                 }
                                 None => {success = false}
                             }
