@@ -49,7 +49,7 @@ impl EventMonitor for FileChanges {
         if self.step > 10 {
             println!("check fs changes: {}", self.triggered);
 
-            match compare(self, self.settings_map.clone()).await {
+            match compare_all_snapshots(self, self.settings_map.clone()).await {
                 None => {}
                 Some(e) => {
                     match e.0 {
@@ -114,8 +114,7 @@ pub struct SnapshotCompareResult {
     pub changed: Vec<String>
 }
 
-async fn compare(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> Option<(SnapshotChangeType, SnapshotCompareResult)> {
-    let mut success = true;
+async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> Option<(SnapshotChangeType, SnapshotCompareResult)> {
     let mut created: Vec<String> = vec![];
     let mut deleted: Vec<String> = vec![];
     let mut changed: Vec<String> = vec![];
@@ -124,9 +123,9 @@ async fn compare(file_changes: &mut FileChanges, settings_map: HashMap<String, S
     let mut new_sn: Vec<Snapshot> = vec![];
 
     for (ind, i) in file_changes.snapshots.iter().enumerate() {
-        let new = Snapshot::new(i.root_path.as_ref(), i.hash_type);
+        let rehash = Snapshot::new(i.root_path.as_ref(), i.hash_type);
 
-        if let Some(res) = compare_snapshots(i.clone(), new.clone()) {
+        if let Some(res) = compare_snapshots(i.clone(), rehash.clone()) {
             println!("{}", i.root_path);
             for c in res.1.created {
                 created.push(c)
@@ -143,22 +142,21 @@ async fn compare(file_changes: &mut FileChanges, settings_map: HashMap<String, S
             println!("{:#?}", deleted);
             println!("{:#?}", changed);
 
+            to_remove.push(ind);
+            new_sn.push(rehash.clone());
         }
-
-
-        to_remove.push(ind);
-        new_sn.push(new.clone());
     }
 
     file_changes.snapshots.clear();
 
+    file_changes.snapshots = new_sn;
     // for i in to_remove {
     //     file_changes.snapshots.remove(i);
     // }
 
-    for i in new_sn {
-        file_changes.snapshots.push(i)
-    }
+    // for i in new_sn {
+    //     file_changes.snapshots.push(i)
+    // }
 
 
     // for snapshot in file_changes.snapshots.iter() {
