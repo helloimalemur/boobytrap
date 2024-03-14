@@ -137,114 +137,29 @@ async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: Has
                 changed.push(ch)
             }
 
-
-            println!("{:#?}", created);
-            println!("{:#?}", deleted);
-            println!("{:#?}", changed);
-
             to_remove.push(ind);
             new_sn.push(rehash.clone());
         }
     }
 
     file_changes.snapshots.clear();
-
     file_changes.snapshots = new_sn;
-    // for i in to_remove {
-    //     file_changes.snapshots.remove(i);
-    // }
 
-    // for i in new_sn {
-    //     file_changes.snapshots.push(i)
-    // }
+    let mut return_type = SnapshotChangeType::None;
+    if !created.is_empty() { return_type = SnapshotChangeType::Created; }
+    if !deleted.is_empty() { return_type = SnapshotChangeType::Deleted; }
+    if !changed.is_empty() { return_type = SnapshotChangeType::Changed; }
+
+    println!("created: {:?}", created);
+    println!("deleted: {:?}", deleted);
+    println!("changed: {:?}", changed);
 
 
-    // for snapshot in file_changes.snapshots.iter() {
-    //
-    // }
-
-    // if let Some(last) = file_changes.snapshots.pop() {
-    //     let current = create_snapshot(last.root_path.as_str(), last.hash_type);
-    //
-    //     match last.file_hashes.lock() {
-    //         Ok(mut last_lock) => {
-    //
-    //             // for each entry in the hash list
-    //             for last_entry in last_lock.iter() {
-    //
-    //                 // check for deletion
-    //                 if !Path::new(last_entry.0).exists() {
-    //                     deleted.push(last_entry.0.to_string());
-    //                     file_changes.triggered = true;
-    //                 }
-    //
-    //                 match current.file_hashes.lock() {
-    //                     Ok(curr_lock) => {
-    //
-    //
-    //                         match curr_lock.get(last_entry.0) {
-    //                             Some(new_entry) => {
-    //
-    //                                 // check for mis-matching checksum
-    //                                 if !new_entry.check_sum.eq(&last_entry.1.check_sum) {
-    //                                     file_changes.triggered = true;
-    //                                     changed.push(new_entry.path.to_string());
-    //                                 }
-    //
-    //                             }
-    //                             None => {success = false}
-    //                         }
-    //
-    //                     }
-    //                     Err(_) => {success = false}
-    //
-    //                 }
-    //
-    //             }
-    //
-    //         }
-    //         Err(_) => {success = false}
-    //     }
-    //
-    //     match current.file_hashes.lock() {
-    //         Ok(e) => {
-    //             for new_entry in e.iter() {
-    //                 // check for file creations
-    //                 if last.file_hashes.lock().unwrap().get(new_entry.0).is_none() {
-    //                     created.push(new_entry.0.to_string());
-    //                     file_changes.triggered = true;
-    //                 }
-    //             }
-    //         }
-    //         Err(_) => {}
-    //     }
-    //
-    //     let mut return_type = SnapshotChangeType::None;
-    //     if !created.is_empty() { return_type = SnapshotChangeType::Created; }
-    //     if !deleted.is_empty() { return_type = SnapshotChangeType::Deleted; }
-    //     if !changed.is_empty() { return_type = SnapshotChangeType::Changed; }
-    //
-    //     file_changes.snapshots.push(current);
-    //     println!("TOTAL SNAPSHOTS: {:#?}", file_changes.snapshots.len());
-    //     Some((return_type, SnapshotCompareResult {
-    //         created,
-    //         deleted,
-    //         changed,
-    //     }))
-    // } else {
-    //     None
-    // }
-
-        let mut return_type = SnapshotChangeType::None;
-        if !created.is_empty() { return_type = SnapshotChangeType::Created; }
-        if !deleted.is_empty() { return_type = SnapshotChangeType::Deleted; }
-        if !changed.is_empty() { return_type = SnapshotChangeType::Changed; }
-
-        Some((return_type, SnapshotCompareResult {
-            created,
-            deleted,
-            changed,
-        }))
+    Some((return_type, SnapshotCompareResult {
+        created,
+        deleted,
+        changed,
+    }))
 }
 
 
