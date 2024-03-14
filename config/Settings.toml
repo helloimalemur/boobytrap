@@ -10,7 +10,7 @@ notify_on_increase_of_usb_devices = "true"
 unmount_crypt_on_increase_of_usb_devices = "true"
 
 ### Burn File Monitor
-burn_file_mon_enabled = "true"
+burn_file_mon_enabled = "false"
 unmount_crypt_on_file_burn = "true"
 ssh_check_burn_host = "v1a"
 ssh_check_burn_user = "root"
