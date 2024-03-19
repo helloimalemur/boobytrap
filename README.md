@@ -1,6 +1,5 @@
 # TripWire
-
-## System Monitoring
+## System Security Monitor
 ## Detect and Act on unauthorized access of any kind from any source
 
 # Detect and Act on;
