@@ -18,6 +18,7 @@ fs_mon_enabled = "true"
 fs_mon_dir_1 = "/etc"
 fs_mon_dir_2 = "/bin"
 fs_mon_hash_type = "blake3"
+
 ### USB Monitor
 usb_mon_enabled = "true"
 reboot_on_increase_of_usb_devices = "false"
@@ -33,6 +34,7 @@ ssh_check_burn_key = "/home/foxx/.ssh/id_ed25519"
 ssh_check_burn_path = "/root/.cache/burn"
 ssh_check_burn_check_interval = "30"
 burn_path_1 = "/root/test/"
+
 ### Network Monitor
 net_mon_enabled = "false"
 
