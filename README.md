@@ -9,7 +9,9 @@
 ## ssh "burn file"
 ## insecure configuration
 
-## config/Settings.toml
+
+# Setup
+### create config/Settings.toml
 ```shell
 ### File System Integrity
 fs_mon_enabled = "true"
