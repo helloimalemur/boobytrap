@@ -41,6 +41,7 @@ discord_webhook_url = "https://discord.com/api/webhooks/"
 discord_webhook_avatar_name = "Lazarus"
 
 ```
-
-
-## grep -rn 'PasswordAuthentication yes' /etc/
+### Run
+```shell
+sudo bash -e install.sh
+```
