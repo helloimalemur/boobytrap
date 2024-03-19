@@ -27,7 +27,11 @@ impl USBMon {
 
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
-        let new_devices = get_usb_devices_physical().await;
+        let mut new_devices: Vec<String> = vec![];
+        let n= get_usb_devices_physical().await;
+        n.iter().for_each(|r| {new_devices.push(r.to_string())});
+        let d = get_usb_devices().await;
+        d.iter().for_each(|r| {new_devices.push(r.to_string())});
 
         if self.last_check != 0 && self.last_check != new_devices.len() {
             self.devices = new_devices.clone();
@@ -59,13 +63,20 @@ impl EventMonitor for USBMon {
     }
 }
 
-async fn get_usb_devices() {
+async fn get_usb_devices() -> Vec<String> {
+    let mut devices: Vec<String> = vec![];
     let mut result = String::new();
-    let command_str = "cat /proc/bus/input/devices";
+    let command_str = "lsusb";
     if let Ok(res) = Command::new("sh").arg("-c").arg(command_str).output() {
         result = String::from_utf8(res.stdout.to_vec()).unwrap();
+        result.split('\n').for_each(|r| {
+            if !r.split(' ').last().unwrap().to_string().is_empty() {
+                devices.push(r.split(' ').last().unwrap().to_string())
+            }
+        })
     }
     // println!("{}", result)
+    devices
 }
 
 async fn get_usb_devices_physical() -> Vec<String> {
