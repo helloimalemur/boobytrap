@@ -1,1 +1,4 @@
 config/Settings.toml
+Cargo.lock
+.idea/
+target/
