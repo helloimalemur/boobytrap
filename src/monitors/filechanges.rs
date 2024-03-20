@@ -37,10 +37,19 @@ impl FileChanges {
             black_list: vec![],
         };
 
+        let mut to_remove: Vec<usize> = vec![];
         // load and push blacklisted directories
-        // for entry in load_blacklist() {
-        //
-        // }
+        for entry in load_blacklist() {
+            for (i, x) in file_changes.monitored_directories.iter_mut().enumerate() {
+                if x.eq_ignore_ascii_case(entry.as_str()) {
+                    to_remove.push(i)
+                }
+            }
+        }
+
+        for entry in to_remove {
+            file_changes.monitored_directories.remove(entry);
+        }
 
         for dir in &file_changes.monitored_directories {
             file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3));
