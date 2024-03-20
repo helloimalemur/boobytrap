@@ -1,10 +1,13 @@
 use std::collections::HashMap;
 use std::fs;
+use std::io::{BufRead, Read};
 use std::path::Path;
 use std::sync::LockResult;
+use config::File;
 use Fasching::{compare_snapshots, create_snapshot};
 use Fasching::hasher::HashType;
 use Fasching::snapshot::{FileMetadata, Snapshot};
+use bytes::BytesMut;
 use crate::monitors::filechanges;
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
@@ -17,7 +20,8 @@ pub struct FileChanges {
     monitored_directories: Vec<String>,
     snapshots: Vec<Snapshot>,
     hash_type: HashType,
-    settings_map: HashMap<String, String>
+    settings_map: HashMap<String, String>,
+    black_list: Vec<String>
 }
 
 impl FileChanges {
@@ -30,7 +34,13 @@ impl FileChanges {
             snapshots: vec![],
             hash_type: get_hash_type(settings_map.clone()),
             settings_map,
+            black_list: vec![],
         };
+
+        // load and push blacklisted directories
+        // for entry in load_blacklist() {
+        //
+        // }
 
         for dir in &file_changes.monitored_directories {
             file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3));
@@ -100,6 +110,18 @@ fn get_hash_type(settings_map: HashMap<String, String>) -> HashType {
     }
 }
 
+fn load_blacklist() -> Vec<String> {
+    let mut blacklist: Vec<String> = vec![];
+
+    if let Ok(mut file) = fs::read_to_string(Path::new("config/file_mon_blacklist")) {
+        for line in file.lines() {
+            blacklist.push(line.to_string());
+        }
+    }
+
+    blacklist
+}
+
 enum SnapshotChangeType {
     None,
     Created,
@@ -166,4 +188,16 @@ async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: Has
 async fn fs_changes_alert(message: String, settings_map: HashMap<String, String>) {
     println!("{}", message);
     let _ = send_discord(message.as_str(), settings_map).await;
+}
+
+
+#[cfg(test)]
+mod tests {
+    use crate::monitors::filechanges::load_blacklist;
+
+    #[test]
+    fn test_load_blacklist() {
+        let x = load_blacklist();
+        println!("{:#?}", x);
+    }
 }
