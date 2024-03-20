@@ -75,7 +75,8 @@ impl AppState {
                         e.check().await;
                     }
                 }
-                thread::sleep(Duration::new(0, 500000000))
+
+                tokio::time::sleep(Duration::new(0, 500000000)).await;
             }
         }
     }
