@@ -34,17 +34,15 @@ impl FileChanges {
             snapshots: vec![],
             hash_type: get_hash_type(settings_map.clone()),
             settings_map,
-            black_list: vec![],
+            black_list: load_blacklist(),
         };
 
         // load and push blacklisted directories
-
-        let blacklist = load_blacklist();
-        println!("Blacklisted: {:?}", blacklist);
+        println!("Blacklisted: {:?}", file_changes.black_list);
 
         for dir in &file_changes.monitored_directories {
-            if !blacklist.contains(dir) {
-                file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3));
+            if !file_changes.black_list.contains(dir) {
+                file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3, file_changes.black_list.clone()));
             }
         }
 
@@ -60,8 +58,7 @@ impl EventMonitor for FileChanges {
     async fn check(&mut self) {
         if self.step > 10 {
             println!("check fs changes: {}", self.triggered);
-
-            match compare_all_snapshots(self, self.settings_map.clone()).await {
+            match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone()).await {
                 None => {}
                 Some(e) => {
                     match e.0 {
@@ -113,15 +110,15 @@ fn get_hash_type(settings_map: HashMap<String, String>) -> HashType {
 }
 
 fn load_blacklist() -> Vec<String> {
-    let mut blacklist: Vec<String> = vec![];
+    let mut black_list: Vec<String> = vec![];
 
     if let Ok(mut file) = fs::read_to_string(Path::new("config/file_mon_blacklist")) {
         for line in file.lines() {
-            blacklist.push(line.to_string());
+            black_list.push(line.to_string());
         }
     }
 
-    blacklist
+    black_list
 }
 
 enum SnapshotChangeType {
@@ -138,7 +135,7 @@ pub struct SnapshotCompareResult {
     pub changed: Vec<String>
 }
 
-async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>) -> Option<(SnapshotChangeType, SnapshotCompareResult)> {
+async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: HashMap<String, String>, black_list: Vec<String>) -> Option<(SnapshotChangeType, SnapshotCompareResult)> {
     let mut created: Vec<String> = vec![];
     let mut deleted: Vec<String> = vec![];
     let mut changed: Vec<String> = vec![];
@@ -147,7 +144,8 @@ async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: Has
     let mut new_sn: Vec<Snapshot> = vec![];
 
     for (ind, i) in file_changes.snapshots.iter().enumerate() {
-        let rehash = Snapshot::new(i.root_path.as_ref(), i.hash_type);
+        println!("{:#?}", black_list);
+        let rehash = Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone());
 
         if let Some(res) = compare_snapshots(i.clone(), rehash.clone()) {
             println!("{}", i.root_path);
