@@ -144,7 +144,7 @@ async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: Has
     let mut new_sn: Vec<Snapshot> = vec![];
 
     for (ind, i) in file_changes.snapshots.iter().enumerate() {
-        println!("{:#?}", black_list);
+        // println!("{:#?}", black_list);
         let rehash = Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone());
 
         if let Some(res) = compare_snapshots(i.clone(), rehash.clone()) {
