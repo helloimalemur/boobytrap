@@ -42,7 +42,9 @@ impl FileChanges {
 
         for dir in &file_changes.monitored_directories {
             if !file_changes.black_list.contains(dir) {
-                file_changes.snapshots.push(create_snapshot(dir.as_str(), HashType::BLAKE3, file_changes.black_list.clone()));
+                if let Ok(snapshot) = create_snapshot(dir.as_str(), HashType::BLAKE3, file_changes.black_list.clone()) {
+                    file_changes.snapshots.push(snapshot);
+                }
             }
         }
 
@@ -145,23 +147,25 @@ async fn compare_all_snapshots(file_changes: &mut FileChanges, settings_map: Has
 
     for (ind, i) in file_changes.snapshots.iter().enumerate() {
         // println!("{:#?}", black_list);
-        let rehash = Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone());
+        if let Ok(rehash) = Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone()) {
+            if let Some(res) = compare_snapshots(i.clone(), rehash.clone()) {
+                println!("{}", i.root_path);
+                for c in res.1.created {
+                    created.push(c)
+                }
+                for d in res.1.deleted {
+                    deleted.push(d)
+                }
+                for ch in res.1.changed {
+                    changed.push(ch)
+                }
 
-        if let Some(res) = compare_snapshots(i.clone(), rehash.clone()) {
-            println!("{}", i.root_path);
-            for c in res.1.created {
-                created.push(c)
-            }
-            for d in res.1.deleted {
-                deleted.push(d)
-            }
-            for ch in res.1.changed {
-                changed.push(ch)
-            }
+                to_remove.push(ind);
 
-            to_remove.push(ind);
-            new_sn.push(rehash.clone());
+                new_sn.push(rehash.clone());
+            }
         }
+
     }
 
     file_changes.snapshots.clear();
