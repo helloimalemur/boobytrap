@@ -7,12 +7,12 @@ edition = "2021"
 
 [dependencies]
 httping = "0.1.9"
-discord-webhook-lib = "0.1.4"
+discord-webhook-lib = "0.1.5"
 tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "macros"] }
 config = "0.14.0"
 anyhow = "1.0.81"
 reqwest = "0.12.2"
 chrono = "0.4.37"
-Fasching = "0.1.17"
+Fasching = "0.2.3"
 #Fasching = { path = "../Fasching/" }
 bytes = "1.6.0"
