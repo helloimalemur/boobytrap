@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::process::Command;
 use reqwest::Error;
 
-pub async fn send_discord(message: &str, settings_map: HashMap<String, String>) -> Result<(), Error> {
+pub async fn send_discord(message: &str, settings_map: HashMap<String, String>) -> Result<(), anyhow::Error> {
     let mut final_message = String::new();
 
     if let Ok(output) = Command::new("hostnamectl").arg("hostname").output() {

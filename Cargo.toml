@@ -1,18 +1,18 @@
 [package]
 name = "tw"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 httping = "0.1.9"
-discord-webhook-lib = "0.1.5"
+discord-webhook-lib = "0.1.7"
 tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "macros"] }
 config = "0.14.0"
 anyhow = "1.0.81"
-reqwest = "0.12.2"
+reqwest = "0.12.3"
 chrono = "0.4.37"
-Fasching = "0.2.3"
+filesystem-hashing = "0.2.4"
 #Fasching = { path = "../Fasching/" }
 bytes = "1.6.0"

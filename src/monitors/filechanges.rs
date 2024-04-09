@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use std::fs;
-use std::io::{BufRead, Read};
+use std::io::{Read};
 use std::path::Path;
 use std::sync::LockResult;
 use config::File;
-use Fasching::{compare_snapshots, create_snapshot};
-use Fasching::hasher::HashType;
-use Fasching::snapshot::{FileMetadata, Snapshot};
+use filesystem_hashing::{compare_snapshots, create_snapshot};
+use filesystem_hashing::hasher::HashType;
+use filesystem_hashing::snapshot::{FileMetadata, Snapshot};
 use bytes::BytesMut;
 use crate::monitors::filechanges;
 use crate::monitors::notify::send_discord;
