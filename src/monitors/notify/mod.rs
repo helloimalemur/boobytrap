@@ -1,10 +1,8 @@
+use config::Config;
 use std::collections::HashMap;
 use std::process::Command;
 
-pub async fn send_discord(
-    message: &str,
-    settings_map: HashMap<String, String>,
-) -> Result<(), anyhow::Error> {
+pub async fn send_discord(message: &str, settings_map: Config) -> Result<(), anyhow::Error> {
     #[allow(unused)]
     let mut final_message = String::new();
 

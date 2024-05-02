@@ -1,10 +1,11 @@
 use crate::monitors::notify::send_discord;
+use config::Config;
 use std::collections::HashMap;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
 
-pub async fn reboot_system(settings_map: HashMap<String, String>) {
+pub async fn reboot_system(settings_map: Config) {
     let _res = send_discord("System rebooting", settings_map).await;
     if let Ok(reboot) = Command::new("reboot").output() {
         println!("{:#?}", reboot)
