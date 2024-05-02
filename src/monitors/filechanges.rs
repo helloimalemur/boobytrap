@@ -1,5 +1,6 @@
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
+use config::Config;
 use filesystem_hashing::hasher::HashType;
 use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
@@ -14,12 +15,12 @@ pub struct FileChanges {
     monitored_directories: Vec<String>,
     snapshots: Vec<Snapshot>,
     hash_type: HashType,
-    settings_map: HashMap<String, String>,
+    settings_map: Config,
     black_list: Vec<String>,
 }
 
 impl FileChanges {
-    pub fn new(settings_map: HashMap<String, String>) -> Self {
+    pub fn new(settings_map: Config) -> Self {
         let mut file_changes = FileChanges {
             triggered: false,
             step: 0,
@@ -88,18 +89,21 @@ impl EventMonitor for FileChanges {
     }
 }
 
-fn load_directories(settings_map: HashMap<String, String>) -> Vec<String> {
+fn load_directories(settings_map: Config) -> Vec<String> {
     let mut dirs: Vec<String> = vec![];
-    for i in settings_map.iter() {
-        if i.0.starts_with("fs_mon_dir") {
-            dirs.push(i.1.to_string())
-        }
+    let mon_dirs = settings_map.get::<Vec<String>>("fs_mon_dir").unwrap();
+    for i in mon_dirs.iter() {
+        dirs.push(i.to_string())
     }
     dirs
 }
 
-fn get_hash_type(settings_map: HashMap<String, String>) -> HashType {
-    match settings_map.get("fs_mon_hash_type").unwrap().as_str() {
+fn get_hash_type(settings_map: Config) -> HashType {
+    match settings_map
+        .get::<String>("fs_mon_hash_type")
+        .unwrap()
+        .as_str()
+    {
         "blake3" => HashType::BLAKE3,
         "SHA3" => HashType::SHA3,
         "MD5" => HashType::MD5,
@@ -135,7 +139,7 @@ pub struct SnapshotCompareResult {
 
 async fn compare_all_snapshots(
     file_changes: &mut FileChanges,
-    _settings_map: HashMap<String, String>,
+    _settings_map: Config,
     black_list: Vec<String>,
 ) -> Option<(SnapshotChangeType, SnapshotCompareResult)> {
     let mut created: Vec<String> = vec![];
@@ -197,7 +201,7 @@ async fn compare_all_snapshots(
     ))
 }
 
-async fn fs_changes_alert(message: String, settings_map: HashMap<String, String>) {
+async fn fs_changes_alert(message: String, settings_map: Config) {
     println!("{}", message);
     let _ = send_discord(message.as_str(), settings_map).await;
 }

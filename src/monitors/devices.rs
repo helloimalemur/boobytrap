@@ -1,6 +1,7 @@
 use crate::monitors::actions::reboot_system;
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
+use config::Config;
 use std::collections::HashMap;
 use std::process::Command;
 
@@ -9,11 +10,11 @@ pub struct USBMon {
     devices: Vec<String>,
     total_devices: usize,
     last_check: usize,
-    settings_map: HashMap<String, String>,
+    settings_map: Config,
 }
 
 impl USBMon {
-    pub fn new(settings_map: HashMap<String, String>) -> Self {
+    pub fn new(settings_map: Config) -> Self {
         USBMon {
             triggered: false,
             devices: vec![],
@@ -101,16 +102,16 @@ async fn get_usb_devices_physical() -> Vec<String> {
     devices
 }
 
-async fn usb_triggered(settings_map: HashMap<String, String>) {
+async fn usb_triggered(settings_map: Config) {
     if settings_map
-        .get("reboot_on_increase_of_usb_devices")
+        .get::<String>("reboot_on_increase_of_usb_devices")
         .unwrap()
         .eq_ignore_ascii_case("true")
     {
         reboot_system(settings_map.clone()).await;
     }
     if settings_map
-        .get("notify_on_increase_of_usb_devices")
+        .get::<String>("notify_on_increase_of_usb_devices")
         .unwrap()
         .eq_ignore_ascii_case("true")
     {

@@ -17,7 +17,7 @@ pub struct AppState {
     pub mon_usb: bool,
     pub detection_triggered: bool,
     pub monitors: Arc<Mutex<Vec<Monitors>>>,
-    pub settings_map: HashMap<String, String>,
+    pub settings_map: Config,
 }
 
 impl AppState {
@@ -27,49 +27,47 @@ impl AppState {
             .add_source(config::File::with_name("config/Settings.toml"))
             .build()
             .unwrap();
-        let settings_map = settings
-            .try_deserialize::<HashMap<String, String>>()
-            .unwrap();
+        // let settings_map = settings
+        //     .try_deserialize::<HashMap<String, String>>()
+        //     .unwrap();
 
         let mut monitors: Vec<Monitors> = vec![];
 
-        if settings_map
-            .get("usb_mon_enabled")
+        if settings
+            .get::<String>("usb_mon_enabled")
             .unwrap()
             .eq_ignore_ascii_case("true")
         {
-            monitors.push(Monitors::USBMon(USBMon::new(settings_map.clone())));
+            monitors.push(Monitors::USBMon(USBMon::new(settings.clone())));
         }
-        if settings_map
-            .get("net_mon_enabled")
+        if settings
+            .get::<String>("net_mon_enabled")
             .unwrap()
             .eq_ignore_ascii_case("true")
         {
-            monitors.push(Monitors::NetMon(NETMon::new(settings_map.clone())));
+            monitors.push(Monitors::NetMon(NETMon::new(settings.clone())));
         }
-        if settings_map
-            .get("burn_file_mon_enabled")
+        if settings
+            .get::<String>("burn_file_mon_enabled")
             .unwrap()
             .eq_ignore_ascii_case("true")
         {
-            monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings_map.clone())));
+            monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings.clone())));
         }
 
-        if settings_map
-            .get("fs_mon_enabled")
+        if settings
+            .get::<String>("fs_mon_enabled")
             .unwrap()
             .eq_ignore_ascii_case("true")
         {
-            monitors.push(Monitors::FileChanges(FileChanges::new(
-                settings_map.clone(),
-            )));
+            monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
         }
 
         AppState {
             mon_usb: true,
             detection_triggered: false,
             monitors: Arc::new(Mutex::new(monitors)),
-            settings_map,
+            settings_map: settings,
         }
     }
 

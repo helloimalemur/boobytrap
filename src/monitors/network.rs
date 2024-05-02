@@ -1,16 +1,17 @@
 use crate::monitors::actions::reboot_system;
 use crate::tw::EventMonitor;
+use config::Config;
 use std::collections::HashMap;
 
 #[allow(unused)]
 pub struct NETMon {
     triggered: bool,
     interfaces: Vec<String>,
-    settings_map: HashMap<String, String>,
+    settings_map: Config,
 }
 
 impl NETMon {
-    pub fn new(settings_map: HashMap<String, String>) -> Self {
+    pub fn new(settings_map: Config) -> Self {
         NETMon {
             triggered: false,
             interfaces: vec![],
@@ -32,6 +33,6 @@ impl EventMonitor for NETMon {
     }
 }
 
-async fn net_alert(settings_map: HashMap<String, String>) {
+async fn net_alert(settings_map: Config) {
     reboot_system(settings_map).await;
 }
