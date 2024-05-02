@@ -1,8 +1,11 @@
 use std::collections::HashMap;
 use std::process::Command;
-use reqwest::Error;
 
-pub async fn send_discord(message: &str, settings_map: HashMap<String, String>) -> Result<(), anyhow::Error> {
+pub async fn send_discord(
+    message: &str,
+    settings_map: HashMap<String, String>,
+) -> Result<(), anyhow::Error> {
+    #[allow(unused)]
     let mut final_message = String::new();
 
     if let Ok(output) = Command::new("hostnamectl").arg("hostname").output() {
@@ -17,11 +20,15 @@ pub async fn send_discord(message: &str, settings_map: HashMap<String, String>) 
 
     let discord_webhook_url = settings_map.get("discord_webhook_url").unwrap();
     let discord_webhook_avatar_name = settings_map.get("discord_webhook_avatar_name").unwrap();
-    discord_webhook_lib::send_discord(discord_webhook_url, final_message.as_str(), discord_webhook_avatar_name).await
+    discord_webhook_lib::send_discord(
+        discord_webhook_url,
+        final_message.as_str(),
+        discord_webhook_avatar_name,
+    )
+    .await
 }
 
 // pub async fn send_email() {}
-
 
 // #[cfg(test)]
 // mod tests {

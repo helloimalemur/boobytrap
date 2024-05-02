@@ -1,8 +1,7 @@
 use crate::tw::AppState;
 
-mod tw;
 mod monitors;
-
+mod tw;
 
 #[tokio::main]
 async fn main() {

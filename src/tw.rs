@@ -1,18 +1,17 @@
-use config::Config;
-use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::Duration;
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
+use config::Config;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 pub enum Monitors {
     USBMon(USBMon),
     NetMon(NETMon),
     SSHBurnMon(SSHBurnMon),
-    FileChanges(FileChanges)
+    FileChanges(FileChanges),
 }
 pub struct AppState {
     pub mon_usb: bool,
@@ -34,18 +33,36 @@ impl AppState {
 
         let mut monitors: Vec<Monitors> = vec![];
 
-        if settings_map.get("usb_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+        if settings_map
+            .get("usb_mon_enabled")
+            .unwrap()
+            .eq_ignore_ascii_case("true")
+        {
             monitors.push(Monitors::USBMon(USBMon::new(settings_map.clone())));
         }
-        if settings_map.get("net_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+        if settings_map
+            .get("net_mon_enabled")
+            .unwrap()
+            .eq_ignore_ascii_case("true")
+        {
             monitors.push(Monitors::NetMon(NETMon::new(settings_map.clone())));
         }
-        if settings_map.get("burn_file_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
+        if settings_map
+            .get("burn_file_mon_enabled")
+            .unwrap()
+            .eq_ignore_ascii_case("true")
+        {
             monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings_map.clone())));
         }
 
-        if settings_map.get("fs_mon_enabled").unwrap().eq_ignore_ascii_case("true") {
-            monitors.push(Monitors::FileChanges(FileChanges::new(settings_map.clone())));
+        if settings_map
+            .get("fs_mon_enabled")
+            .unwrap()
+            .eq_ignore_ascii_case("true")
+        {
+            monitors.push(Monitors::FileChanges(FileChanges::new(
+                settings_map.clone(),
+            )));
         }
 
         AppState {

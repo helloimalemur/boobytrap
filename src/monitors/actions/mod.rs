@@ -1,8 +1,8 @@
+use crate::monitors::notify::send_discord;
 use std::collections::HashMap;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;
-use crate::monitors::notify::send_discord;
 
 pub async fn reboot_system(settings_map: HashMap<String, String>) {
     let _res = send_discord("System rebooting", settings_map).await;
@@ -19,9 +19,7 @@ pub async fn unmount_encrypted_volumes() {
             let luks_vol = vol_split.get(0).unwrap().to_string();
             // println!("{}", luks_vol);
             // println!("{}", command_str);
-            if let Ok(res) = Command::new("cat")
-                .arg("/proc/mounts")
-                .output(){
+            if let Ok(res) = Command::new("cat").arg("/proc/mounts").output() {
                 let mount_file_results = String::from_utf8(res.stdout.to_vec()).unwrap();
                 for mount in mount_file_results.lines() {
                     let luks_vol_str = luks_vol.as_str();
@@ -40,9 +38,7 @@ pub async fn unmount_encrypted_volumes() {
 }
 
 fn commit_umount_volume(vol_mount_path: &str) {
-    if let Ok(res) = Command::new("umount")
-        .arg(vol_mount_path)
-        .output() {
+    if let Ok(res) = Command::new("umount").arg(vol_mount_path).output() {
         println!("{}", String::from_utf8(res.stdout.to_vec()).unwrap())
     }
 }
@@ -52,11 +48,11 @@ fn commit_luks_close(luks_vol: &str) {
     if let Ok(res) = Command::new("cryptsetup")
         .arg("luksClose")
         .arg(luks_vol)
-        .output() {
+        .output()
+    {
         println!("{}", String::from_utf8(res.stdout.to_vec()).unwrap())
     }
 }
-
 
 // #[cfg(test)]
 // mod tests {
