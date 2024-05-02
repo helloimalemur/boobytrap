@@ -33,7 +33,7 @@ impl EventMonitor for USBMon {
         d.iter().for_each(|r| new_devices.push(r.to_string()));
 
         if self.last_check != 0 && self.last_check != new_devices.len() {
-            self.devices = new_devices.clone();
+            self.devices.clone_from(&new_devices);
             self.total_devices = self.devices.len();
 
             if self.last_check < new_devices.len() {
@@ -45,7 +45,7 @@ impl EventMonitor for USBMon {
 
             self.last_check = self.total_devices;
         } else if self.last_check == 0 {
-            self.devices = new_devices.clone();
+            self.devices.clone_from(&new_devices);
             self.total_devices = new_devices.len();
             self.last_check = self.total_devices;
             println!("Total devices: {}", self.total_devices);

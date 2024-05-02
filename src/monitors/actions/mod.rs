@@ -16,7 +16,7 @@ pub async fn unmount_encrypted_volumes() {
         let encrypted_vols = String::from_utf8(output.stdout.to_vec()).unwrap();
         for ea in encrypted_vols.lines() {
             let vol_split: Vec<_> = ea.split_ascii_whitespace().collect();
-            let luks_vol = vol_split.get(0).unwrap().to_string();
+            let luks_vol = vol_split.first().unwrap().to_string();
             // println!("{}", luks_vol);
             // println!("{}", command_str);
             if let Ok(res) = Command::new("cat").arg("/proc/mounts").output() {
