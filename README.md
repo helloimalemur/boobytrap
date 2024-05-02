@@ -15,8 +15,7 @@
 ```shell
 ### File System Integrity
 fs_mon_enabled = "true"
-fs_mon_dir_1 = "/etc"
-fs_mon_dir_2 = "/bin"
+fs_mon_dir = ["/etc", "/bin"]
 fs_mon_hash_type = "blake3"
 
 ### USB Monitor
