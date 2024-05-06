@@ -5,7 +5,7 @@ use filesystem_hashing::hasher::HashType;
 use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
 use std::collections::HashMap;
-use std::fs;
+use std::{env, fs};
 use std::path::Path;
 
 #[allow(unused)]
@@ -93,8 +93,17 @@ fn load_directories(settings_map: Config) -> Vec<String> {
     let mut dirs: Vec<String> = vec![];
     let mon_dirs = settings_map.get::<Vec<String>>("fs_mon_dir").unwrap();
     for i in mon_dirs.iter() {
-        dirs.push(i.to_string())
+        if i.contains('$') {
+            let env_var = i.replace("$", "");
+            let env_ret = env::var(env_var).unwrap();
+            let split = env_ret.split(":").collect::<Vec<&str>>();
+            split.iter().for_each(|e| {dirs.push(e.to_string())})
+
+        } else {
+            dirs.push(i.to_string())
+        }
     }
+    println!("Monitoring Directories: {:#?}", dirs);
     dirs
 }
 
