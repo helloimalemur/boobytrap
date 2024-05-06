@@ -164,7 +164,7 @@ async fn compare_all_snapshots(
             Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone(), false)
         {
             if let Some(res) = compare_snapshots(i.clone(), rehash.clone(), false) {
-                println!("{}", i.root_path);
+                // println!("{}", i.root_path);
                 for c in res.1.created {
                     created.push(c)
                 }
