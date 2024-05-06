@@ -5,8 +5,8 @@ use filesystem_hashing::hasher::HashType;
 use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
 use std::collections::HashMap;
-use std::{env, fs};
 use std::path::Path;
+use std::{env, fs};
 
 #[allow(unused)]
 pub struct FileChanges {
@@ -56,7 +56,7 @@ impl FileChanges {
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
         if self.step > 10 {
-            println!("check fs changes: {}", self.triggered);
+            // println!("check fs changes: {}", self.triggered);
             match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
                 .await
             {
@@ -97,8 +97,7 @@ fn load_directories(settings_map: Config) -> Vec<String> {
             let env_var = i.replace("$", "");
             let env_ret = env::var(env_var).unwrap();
             let split = env_ret.split(":").collect::<Vec<&str>>();
-            split.iter().for_each(|e| {dirs.push(e.to_string())})
-
+            split.iter().for_each(|e| dirs.push(e.to_string()))
         } else {
             dirs.push(i.to_string())
         }
@@ -196,9 +195,11 @@ async fn compare_all_snapshots(
         return_type = SnapshotChangeType::Changed;
     }
 
-    println!("created: {:?}", created);
-    println!("deleted: {:?}", deleted);
-    println!("changed: {:?}", changed);
+    if !created.is_empty() || !deleted.is_empty() || !changed.is_empty() {
+        println!("created: {:?}", created);
+        println!("deleted: {:?}", deleted);
+        println!("changed: {:?}", changed);
+    }
 
     Some((
         return_type,

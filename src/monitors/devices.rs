@@ -55,14 +55,15 @@ impl EventMonitor for USBMon {
             println!("Total devices: {}", self.total_devices);
         }
 
-        println!(
-            "check usb: {}, count: {}",
-            self.triggered, self.total_devices
-        );
+        // println!(
+        //     "check usb: {}, count: {}",
+        //     self.triggered, self.total_devices
+        // );
 
         if self.triggered {
             println!("ALERT USB");
             usb_triggered(self.settings_map.clone()).await;
+            println!("USB count: {}", self.total_devices);
             self.triggered = false;
         }
     }
