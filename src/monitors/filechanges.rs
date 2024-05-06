@@ -56,7 +56,7 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        if self.step > 60 { // FS check interval
+        if self.step > 20 { // FS check interval
             // println!("check fs changes: {}", self.triggered);
             match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
                 .await
