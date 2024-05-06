@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use std::process::Command;
 
 #[allow(unused)]
+#[derive(Debug)]
 pub struct SSHBurnMon {
     triggered: bool,
     settings_map: Config,

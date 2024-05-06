@@ -10,6 +10,7 @@ use std::{env, fs};
 use chrono::Local;
 
 #[allow(unused)]
+#[derive(Debug)]
 pub struct FileChanges {
     triggered: bool,
     step: u16,
@@ -65,40 +66,34 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        if self.step > 20 { // FS check interval
-            // println!("check fs changes: {}", self.triggered);
-            match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
-                .await
-            {
-                None => {}
-                Some(e) => match e.0 {
-                    SnapshotChangeType::None => {
-                        // let message = format!("{} :: File System Unchanged",Local::now());
-                        // println!("{}", message);
-                    }
-                    SnapshotChangeType::Created => {
-                        // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
-                        let message = format!("{} :: File Creation Detected: {:?}",Local::now() , e.1.created);
-                        fs_changes_alert(message, self.settings_map.clone()).await
-                    }
-                    SnapshotChangeType::Deleted => {
-                        // println!("{} :: File Deleted Alert!\n{:#?}", Local::now(), e.1);
-                        let message = format!("{} :: File Deletion Detected: {:?}",Local::now() , e.1.deleted);
-                        fs_changes_alert(message, self.settings_map.clone()).await
-                    }
-                    SnapshotChangeType::Changed => {
-                        // println!("{} :: File Change Alert!\n{:#?}", Local::now(), e.1);
-                        let message = format!("{} :: File Change Detected: {:?}",Local::now() , e.1.changed);
-                        fs_changes_alert(message, self.settings_map.clone()).await
-                    }
-                },
-            }
-
-            self.triggered = false;
-            self.step = 0;
-        } else {
-            self.step += 1;
+        match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
+            .await
+        {
+            None => {}
+            Some(e) => match e.0 {
+                SnapshotChangeType::None => {
+                    // let message = format!("{} :: File System Unchanged",Local::now());
+                    // println!("{}", message);
+                }
+                SnapshotChangeType::Created => {
+                    // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
+                    let message = format!("{} :: File Creation Detected: {:?}",Local::now() , e.1.created);
+                    fs_changes_alert(message, self.settings_map.clone()).await
+                }
+                SnapshotChangeType::Deleted => {
+                    // println!("{} :: File Deleted Alert!\n{:#?}", Local::now(), e.1);
+                    let message = format!("{} :: File Deletion Detected: {:?}",Local::now() , e.1.deleted);
+                    fs_changes_alert(message, self.settings_map.clone()).await
+                }
+                SnapshotChangeType::Changed => {
+                    // println!("{} :: File Change Alert!\n{:#?}", Local::now(), e.1);
+                    let message = format!("{} :: File Change Detected: {:?}",Local::now() , e.1.changed);
+                    fs_changes_alert(message, self.settings_map.clone()).await
+                }
+            },
         }
+
+        self.triggered = false;
     }
 }
 

@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use std::process::Command;
 use chrono::Local;
 
+#[derive(Debug)]
 pub struct USBMon {
     triggered: bool,
     devices: Vec<String>,

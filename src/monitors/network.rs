@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use chrono::Local;
 
 #[allow(unused)]
+#[derive(Debug)]
 pub struct NETMon {
     triggered: bool,
     interfaces: Vec<String>,

@@ -7,6 +7,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
 
+#[derive(Debug)]
 pub enum Monitors {
     USBMon(USBMon),
     NetMon(NETMon),
@@ -83,26 +84,30 @@ impl AppState {
             for i in bind.iter_mut() {
                 match i {
                     Monitors::USBMon(e) => {
+                        // println!("{:#?}", e);
                         e.check().await;
                     }
                     Monitors::NetMon(e) => {
+                        // println!("{:#?}", e);
                         e.check().await;
                     }
                     Monitors::SSHBurnMon(e) => {
+                        // println!("{:#?}", e);
                         e.check().await;
                     }
                     Monitors::FileChanges(e) => {
+                        // println!("{:#?}", e);
                         let now = SystemTime::now();
                         let dur_since = now.duration_since(last).unwrap();
                         if dur_since.as_secs() > n_fs_check_tick {
-                            // println!("fs_tick");
-                            e.check().await;
+                            println!("fs_tick");
                             last = SystemTime::now();
+                            e.check().await;
                         }
                     }
                 }
                 tokio::time::sleep(Duration::new(n_tick, 0)).await;
-                // println!("tick");
+                println!("tick");
             }
         }
     }
