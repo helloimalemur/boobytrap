@@ -8,6 +8,7 @@ use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
+use crate::default_config::write_default_config;
 
 #[derive(Debug)]
 pub enum Monitors {
@@ -93,7 +94,7 @@ impl AppState {
 
         if !Path::new(settings_file_path.as_str()).exists() {
             println!("Settings.toml does not exist");
-            exit(1)
+            write_default_config(settings_file_path.clone());
         }
 
         let config = Config::builder();
