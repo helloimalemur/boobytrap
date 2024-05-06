@@ -5,10 +5,15 @@
 ### Detect and Act on;
     - an increase of USB devices
     - network issues or network failure
-    - file changes
+    - filesystem changes
     - ssh "burn file"
-    - insecure configuration
 
+#### Observed memory usage <100MB to ~1GB
+
+### Install
+```shell
+sudo bash -e install.sh
+```
 
 # Setup
 ### create config/Settings.toml
@@ -44,11 +49,6 @@ net_mon_enabled = "false"
 ######## Notification settings
 discord_webhook_url = "https://discord.com/api/webhooks/"
 discord_webhook_avatar_name = "Lazarus"
-
-```
-### Run
-```shell
-sudo bash -e install.sh
 ```
 
 ## Development and Collaboration
