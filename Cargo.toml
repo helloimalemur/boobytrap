@@ -2,7 +2,12 @@
 name = "boobytrap"
 version = "0.1.0"
 edition = "2021"
-
+description = "Detect and Act on unauthorized access of any kind from any source."
+authors = ["jkoontsiii@gmail.com"]
+license = "MIT"
+repository = "https://github.com/helloimalemur/boobytrap"
+keywords = ["file-integrity", "filesystem-integirty", "change-detection", "boobytrap"]
+readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
