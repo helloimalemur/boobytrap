@@ -72,6 +72,8 @@ impl AppState {
     }
 
     pub async fn run(&mut self) {
+        let tick = self.settings_map.get::<String>("tick_delay_seconds").expect("tick_delay_seconds not found in Settings.toml");
+        let n_tick = tick.parse::<u64>().expect("unable to parse tick_delay_seconds");
         loop {
             let mut binding = self.monitors.lock();
             let bind = binding.as_mut().unwrap();
@@ -91,7 +93,7 @@ impl AppState {
                     }
                 }
 
-                tokio::time::sleep(Duration::new(0, 500000000)).await;
+                tokio::time::sleep(Duration::new(n_tick, 0)).await;
             }
         }
     }

@@ -13,6 +13,9 @@
 # Setup
 ### create config/Settings.toml
 ```shell
+## General settings
+tick_delay_seconds = "15"
+
 ### File System Integrity
 fs_mon_enabled = "true"
 fs_mon_dir = ["/etc", "/bin", "$PATH"]
