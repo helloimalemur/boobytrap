@@ -7,6 +7,7 @@ use filesystem_hashing::{compare_snapshots, create_snapshot};
 use std::collections::HashMap;
 use std::path::Path;
 use std::{env, fs};
+use chrono::Local;
 
 #[allow(unused)]
 pub struct FileChanges {
@@ -64,18 +65,18 @@ impl EventMonitor for FileChanges {
                 Some(e) => match e.0 {
                     SnapshotChangeType::None => {}
                     SnapshotChangeType::Created => {
-                        println!("File Created Alert!\n{:#?}", e.1);
-                        let message = format!("File Creation Detected: {:?}", e.1.created);
+                        // println!("{} :::: File Created Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :::: File Creation Detected: {:?}",Local::now() , e.1.created);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                     SnapshotChangeType::Deleted => {
-                        println!("File Deleted Alert!\n{:#?}", e.1);
-                        let message = format!("File Deletion Detected: {:?}", e.1.deleted);
+                        // println!("{} :::: File Deleted Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :::: File Deletion Detected: {:?}",Local::now() , e.1.deleted);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                     SnapshotChangeType::Changed => {
-                        println!("File Change Alert!\n{:#?}", e.1);
-                        let message = format!("File Change Detected: {:?}", e.1.changed);
+                        // println!("{} :::: File Change Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :::: File Change Detected: {:?}",Local::now() , e.1.changed);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                 },
@@ -195,11 +196,11 @@ async fn compare_all_snapshots(
         return_type = SnapshotChangeType::Changed;
     }
 
-    if !created.is_empty() || !deleted.is_empty() || !changed.is_empty() {
-        println!("created: {:?}", created);
-        println!("deleted: {:?}", deleted);
-        println!("changed: {:?}", changed);
-    }
+    // if !created.is_empty() || !deleted.is_empty() || !changed.is_empty() {
+    //     println!("created: {:?}", created);
+    //     println!("deleted: {:?}", deleted);
+    //     println!("changed: {:?}", changed);
+    // }
 
     Some((
         return_type,
