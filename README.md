@@ -1,5 +1,4 @@
-# TripWire (work-in-progress)
-## System Security Monitor
+# Boobytrap (work-in-progress)
 ## Detect and Act on unauthorized access of any kind from any source
 
 ### Detect and Act on;
