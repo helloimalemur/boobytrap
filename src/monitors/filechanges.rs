@@ -47,8 +47,17 @@ impl FileChanges {
                 }
             }
         }
-
+        let mut count = 0;
+        println!("File Count:");
+        file_changes.snapshots.iter().for_each(|s| {
+            let s_len = s.file_hashes.lock().unwrap().len();
+            println!("{} ---- {}", s_len, s.root_path);
+            count += s_len
+        });
         // println!("{:#?}", file_changes.snapshots);
+
+        let message = format!("{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",Local::now(), count);
+        println!("{}", message);
 
         file_changes
     }
