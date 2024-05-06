@@ -22,6 +22,59 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
+        // let config = Config::builder();
+        // let settings = config
+        //     .add_source(config::File::with_name("config/Settings.toml"))
+        //     .build()
+        //     .unwrap();
+        // // let settings_map = settings
+        // //     .try_deserialize::<HashMap<String, String>>()
+        // //     .unwrap();
+        //
+        // let mut monitors: Vec<Monitors> = vec![];
+        //
+        // if settings
+        //     .get::<String>("usb_mon_enabled")
+        //     .unwrap()
+        //     .eq_ignore_ascii_case("true")
+        // {
+        //     monitors.push(Monitors::USBMon(USBMon::new(settings.clone())));
+        // }
+        // if settings
+        //     .get::<String>("net_mon_enabled")
+        //     .unwrap()
+        //     .eq_ignore_ascii_case("true")
+        // {
+        //     monitors.push(Monitors::NetMon(NETMon::new(settings.clone())));
+        // }
+        // if settings
+        //     .get::<String>("burn_file_mon_enabled")
+        //     .unwrap()
+        //     .eq_ignore_ascii_case("true")
+        // {
+        //     monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings.clone())));
+        // }
+        //
+        // if settings
+        //     .get::<String>("fs_mon_enabled")
+        //     .unwrap()
+        //     .eq_ignore_ascii_case("true")
+        // {
+        //     monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
+        // }
+
+        AppState {
+            mon_usb: true,
+            detection_triggered: false,
+            monitors: Arc::new(Mutex::new(vec![])),
+            settings_map: Config::default(),
+        }
+    }
+
+    pub fn config(&mut self) {
+        println!("Config..");
+        // check for config file if it doesn't exist write default config
+
         let config = Config::builder();
         let settings = config
             .add_source(config::File::with_name("config/Settings.toml"))
@@ -63,12 +116,8 @@ impl AppState {
             monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
         }
 
-        AppState {
-            mon_usb: true,
-            detection_triggered: false,
-            monitors: Arc::new(Mutex::new(monitors)),
-            settings_map: settings,
-        }
+        self.monitors.clone_from(&Arc::new(Mutex::new(monitors)));
+        self.settings_map.clone_from(&settings)
     }
 
     pub async fn run(&mut self) {
