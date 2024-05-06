@@ -1,6 +1,5 @@
 use crate::monitors::notify::send_discord;
 use config::Config;
-use std::collections::HashMap;
 use std::process::Command;
 use std::thread;
 use std::time::Duration;

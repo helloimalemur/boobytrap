@@ -2,7 +2,6 @@ use crate::monitors::actions::unmount_encrypted_volumes;
 use crate::tw::EventMonitor;
 use chrono::{DateTime, Utc};
 use config::Config;
-use std::collections::HashMap;
 use std::process::Command;
 
 #[allow(unused)]

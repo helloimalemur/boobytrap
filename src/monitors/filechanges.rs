@@ -1,13 +1,12 @@
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
+use chrono::Local;
 use config::Config;
 use filesystem_hashing::hasher::HashType;
 use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
-use std::collections::HashMap;
 use std::path::Path;
 use std::{env, fs};
-use chrono::Local;
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -57,7 +56,11 @@ impl FileChanges {
         });
         // println!("{:#?}", file_changes.snapshots);
 
-        let message = format!("{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",Local::now(), count);
+        let message = format!(
+            "{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",
+            Local::now(),
+            count
+        );
         println!("{}", message);
 
         file_changes
@@ -66,8 +69,7 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
-            .await
+        match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone()).await
         {
             None => {}
             Some(e) => match e.0 {
@@ -77,17 +79,29 @@ impl EventMonitor for FileChanges {
                 }
                 SnapshotChangeType::Created => {
                     // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
-                    let message = format!("{} :: File Creation Detected: {:?}",Local::now() , e.1.created);
+                    let message = format!(
+                        "{} :: File Creation Detected: {:?}",
+                        Local::now(),
+                        e.1.created
+                    );
                     fs_changes_alert(message, self.settings_map.clone()).await
                 }
                 SnapshotChangeType::Deleted => {
                     // println!("{} :: File Deleted Alert!\n{:#?}", Local::now(), e.1);
-                    let message = format!("{} :: File Deletion Detected: {:?}",Local::now() , e.1.deleted);
+                    let message = format!(
+                        "{} :: File Deletion Detected: {:?}",
+                        Local::now(),
+                        e.1.deleted
+                    );
                     fs_changes_alert(message, self.settings_map.clone()).await
                 }
                 SnapshotChangeType::Changed => {
                     // println!("{} :: File Change Alert!\n{:#?}", Local::now(), e.1);
-                    let message = format!("{} :: File Change Detected: {:?}",Local::now() , e.1.changed);
+                    let message = format!(
+                        "{} :: File Change Detected: {:?}",
+                        Local::now(),
+                        e.1.changed
+                    );
                     fs_changes_alert(message, self.settings_map.clone()).await
                 }
             },
@@ -102,9 +116,9 @@ fn load_directories(settings_map: Config) -> Vec<String> {
     let mon_dirs = settings_map.get::<Vec<String>>("fs_mon_dir").unwrap();
     for i in mon_dirs.iter() {
         if i.contains('$') {
-            let env_var = i.replace("$", "");
+            let env_var = i.replace('$', "");
             let env_ret = env::var(env_var).unwrap();
-            let split = env_ret.split(":").collect::<Vec<&str>>();
+            let split = env_ret.split(':').collect::<Vec<&str>>();
             split.iter().for_each(|e| dirs.push(e.to_string()))
         } else {
             dirs.push(i.to_string())

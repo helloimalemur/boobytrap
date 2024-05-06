@@ -1,5 +1,4 @@
 use config::Config;
-use std::collections::HashMap;
 use std::process::Command;
 
 pub async fn send_discord(message: &str, settings_map: Config) -> Result<(), anyhow::Error> {

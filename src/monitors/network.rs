@@ -1,8 +1,7 @@
 use crate::monitors::actions::reboot_system;
 use crate::tw::EventMonitor;
-use config::Config;
-use std::collections::HashMap;
 use chrono::Local;
+use config::Config;
 
 #[allow(unused)]
 #[derive(Debug)]

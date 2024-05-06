@@ -1,10 +1,9 @@
 use crate::monitors::actions::reboot_system;
 use crate::monitors::notify::send_discord;
 use crate::tw::EventMonitor;
-use config::Config;
-use std::collections::HashMap;
-use std::process::Command;
 use chrono::Local;
+use config::Config;
+use std::process::Command;
 
 #[derive(Debug)]
 pub struct USBMon {
@@ -42,10 +41,18 @@ impl EventMonitor for USBMon {
             match self.last_check < new_devices.len() {
                 true => {
                     self.triggered = true;
-                    println!("{} :: Total USB devices INCREASED: {}", Local::now(), self.total_devices);
+                    println!(
+                        "{} :: Total USB devices INCREASED: {}",
+                        Local::now(),
+                        self.total_devices
+                    );
                 }
                 false => {
-                    println!("{} :: Total USB devices DECREASED: {}", Local::now(), self.total_devices);
+                    println!(
+                        "{} :: Total USB devices DECREASED: {}",
+                        Local::now(),
+                        self.total_devices
+                    );
                 }
             }
 
@@ -55,7 +62,11 @@ impl EventMonitor for USBMon {
             self.total_devices = new_devices.len();
             self.last_check = self.total_devices;
             println!("Starting..");
-            println!("{} :: Total USB devices: {}", Local::now(), self.total_devices);
+            println!(
+                "{} :: Total USB devices: {}",
+                Local::now(),
+                self.total_devices
+            );
         }
 
         // println!(

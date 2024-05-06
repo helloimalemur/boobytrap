@@ -3,7 +3,6 @@ use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
 
@@ -73,10 +72,20 @@ impl AppState {
     }
 
     pub async fn run(&mut self) {
-        let fs_check_tick = self.settings_map.get::<String>("fs_tick_delay_seconds").expect("tick_delay_seconds not found in Settings.toml");
-        let n_fs_check_tick = fs_check_tick.parse::<u64>().expect("unable to parse fs_tick_delay_seconds");
-        let tick = self.settings_map.get::<String>("tick_delay_seconds").expect("tick_delay_seconds not found in Settings.toml");
-        let n_tick = tick.parse::<u64>().expect("unable to parse tick_delay_seconds");
+        let fs_check_tick = self
+            .settings_map
+            .get::<String>("fs_tick_delay_seconds")
+            .expect("tick_delay_seconds not found in Settings.toml");
+        let n_fs_check_tick = fs_check_tick
+            .parse::<u64>()
+            .expect("unable to parse fs_tick_delay_seconds");
+        let tick = self
+            .settings_map
+            .get::<String>("tick_delay_seconds")
+            .expect("tick_delay_seconds not found in Settings.toml");
+        let n_tick = tick
+            .parse::<u64>()
+            .expect("unable to parse tick_delay_seconds");
         let mut last = SystemTime::now();
         loop {
             let mut binding = self.monitors.lock();
