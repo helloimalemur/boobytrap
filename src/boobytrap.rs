@@ -1,3 +1,6 @@
+use std::fs;
+use std::path::Path;
+use std::process::exit;
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
@@ -75,18 +78,30 @@ impl AppState {
         println!("Config..");
         // check for config file if it doesn't exist write default config
 
+        let mut cache_dir = String::new();
         let cur_user = whoami::username();
+        if cur_user.eq_ignore_ascii_case("root") {
+            let _ = fs::create_dir_all(Path::new("/root/.cache/boobytrap/config/"));
+            cache_dir = "/root/.cache/boobytrap/".to_string();
+        } else {
+            let create_dir = format!("/home/{}/.cache/boobytrap/config/", cur_user);
+            let _ = fs::create_dir_all(Path::new(create_dir.as_str()));
+            cache_dir = format!("/home/{}/.cache/boobytrap/", cur_user);
+        }
 
+        let settings_file_path = format!("{}config/Settings.toml", cache_dir);
 
+        if !Path::new(settings_file_path.as_str()).exists() {
+            println!("Settings.toml does not exist");
+            exit(1)
+        }
 
         let config = Config::builder();
         let settings = config
-            .add_source(config::File::with_name("config/Settings.toml"))
+            .add_source(config::File::with_name(settings_file_path.as_str()))
             .build()
             .unwrap();
-        // let settings_map = settings
-        //     .try_deserialize::<HashMap<String, String>>()
-        //     .unwrap();
+
 
         let mut monitors: Vec<Monitors> = vec![];
 
