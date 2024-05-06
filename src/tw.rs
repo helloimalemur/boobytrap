@@ -100,14 +100,14 @@ impl AppState {
                         let now = SystemTime::now();
                         let dur_since = now.duration_since(last).unwrap();
                         if dur_since.as_secs() > n_fs_check_tick {
-                            println!("fs_tick");
+                            // println!("fs_tick");
                             last = SystemTime::now();
                             e.check().await;
                         }
                     }
                 }
                 tokio::time::sleep(Duration::new(n_tick, 0)).await;
-                println!("tick");
+                // println!("tick");
             }
         }
     }
