@@ -56,14 +56,17 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        if self.step > 10 {
+        if self.step > 60 { // FS check interval
             // println!("check fs changes: {}", self.triggered);
             match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
                 .await
             {
                 None => {}
                 Some(e) => match e.0 {
-                    SnapshotChangeType::None => {}
+                    SnapshotChangeType::None => {
+                        let message = format!("{} :: File System Unchanged",Local::now());
+                        fs_changes_alert(message, self.settings_map.clone()).await
+                    }
                     SnapshotChangeType::Created => {
                         // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
                         let message = format!("{} :: File Creation Detected: {:?}",Local::now() , e.1.created);
