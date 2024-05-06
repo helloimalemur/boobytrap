@@ -12,7 +12,9 @@
 
 ### Install
 ```shell
-sudo bash -e install.sh
+$ sudo bash -e install.sh
+or
+$ cargo install boobytrap
 ```
 
 # Setup
