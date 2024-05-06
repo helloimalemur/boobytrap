@@ -1,5 +1,5 @@
 use crate::monitors::actions::unmount_encrypted_volumes;
-use crate::tw::EventMonitor;
+use crate::boobytrap::EventMonitor;
 use chrono::{DateTime, Utc};
 use config::Config;
 use std::process::Command;

@@ -5,7 +5,7 @@ Description=TripWire
 Type=simple
 User=root
 Group=root
-ExecStart=/var/lib/tw/run.sh
+ExecStart=/var/lib/boobytrap/run.sh
 
 [Install]
 WantedBy=multi-user.target

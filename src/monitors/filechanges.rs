@@ -1,5 +1,5 @@
 use crate::monitors::notify::send_discord;
-use crate::tw::EventMonitor;
+use crate::boobytrap::EventMonitor;
 use chrono::Local;
 use config::Config;
 use filesystem_hashing::hasher::HashType;

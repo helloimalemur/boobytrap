@@ -1,2 +1,2 @@
 #!/bin/bash
-cd /var/lib/tw && ./tw
+cd /var/lib/boobytrap && ./boobytrap

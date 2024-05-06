@@ -1,7 +1,7 @@
-use crate::tw::AppState;
+use crate::boobytrap::AppState;
 
 mod monitors;
-mod tw;
+mod boobytrap;
 
 #[tokio::main]
 async fn main() {
