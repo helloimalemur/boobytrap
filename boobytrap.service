@@ -1,5 +1,5 @@
 [Unit]
-Description=TripWire
+Description=Boobytrap
 
 [Service]
 Type=simple
