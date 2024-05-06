@@ -1,8 +1,8 @@
 use crate::boobytrap::AppState;
 
-mod monitors;
 mod boobytrap;
 mod default_config;
+mod monitors;
 
 #[tokio::main]
 async fn main() {

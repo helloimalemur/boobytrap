@@ -1,6 +1,6 @@
+use crate::boobytrap::EventMonitor;
 use crate::monitors::actions::reboot_system;
 use crate::monitors::notify::send_discord;
-use crate::boobytrap::EventMonitor;
 use chrono::Local;
 use config::Config;
 use std::process::Command;

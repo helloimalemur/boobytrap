@@ -1,14 +1,13 @@
-use std::fs;
-use std::path::Path;
-use std::process::exit;
+use crate::default_config::write_default_config;
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
+use std::fs;
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
-use crate::default_config::write_default_config;
 
 #[derive(Debug)]
 pub enum Monitors {
@@ -78,7 +77,7 @@ impl AppState {
     pub fn config(&mut self) {
         println!("Config..");
         // check for config file if it doesn't exist write default config
-
+        #[allow(unused)]
         let mut cache_dir = String::new();
         let cur_user = whoami::username();
         if cur_user.eq_ignore_ascii_case("root") {
@@ -102,7 +101,6 @@ impl AppState {
             .add_source(config::File::with_name(settings_file_path.as_str()))
             .build()
             .unwrap();
-
 
         let mut monitors: Vec<Monitors> = vec![];
 
