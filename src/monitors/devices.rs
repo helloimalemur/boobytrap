@@ -41,10 +41,10 @@ impl EventMonitor for USBMon {
             match self.last_check < new_devices.len() {
                 true => {
                     self.triggered = true;
-                    println!("{} :::: Total devices INCREASED: {}", Local::now(), self.total_devices);
+                    println!("{} :: Total devices INCREASED: {}", Local::now(), self.total_devices);
                 }
                 false => {
-                    println!("{} :::: Total devices DECREASED: {}", Local::now(), self.total_devices);
+                    println!("{} :: Total devices DECREASED: {}", Local::now(), self.total_devices);
                 }
             }
 
@@ -54,7 +54,7 @@ impl EventMonitor for USBMon {
             self.total_devices = new_devices.len();
             self.last_check = self.total_devices;
             println!("Starting..");
-            println!("{} :::: Total devices: {}", Local::now(), self.total_devices);
+            println!("{} :: Total devices: {}", Local::now(), self.total_devices);
         }
 
         // println!(
@@ -65,7 +65,7 @@ impl EventMonitor for USBMon {
         if self.triggered {
             println!("ALERT USB");
             usb_triggered(self.settings_map.clone()).await;
-            println!("{} :::: USB count: {}", Local::now(), self.total_devices);
+            println!("{} :: USB count: {}", Local::now(), self.total_devices);
             self.triggered = false;
         }
     }
