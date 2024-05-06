@@ -75,6 +75,10 @@ impl AppState {
         println!("Config..");
         // check for config file if it doesn't exist write default config
 
+        let cur_user = whoami::username();
+
+
+
         let config = Config::builder();
         let settings = config
             .add_source(config::File::with_name("config/Settings.toml"))
