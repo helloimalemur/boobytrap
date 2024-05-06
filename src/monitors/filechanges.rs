@@ -5,8 +5,9 @@ use filesystem_hashing::hasher::HashType;
 use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
 use std::collections::HashMap;
-use std::fs;
 use std::path::Path;
+use std::{env, fs};
+use chrono::Local;
 
 #[allow(unused)]
 pub struct FileChanges {
@@ -46,8 +47,17 @@ impl FileChanges {
                 }
             }
         }
-
+        let mut count = 0;
+        println!("File Count:");
+        file_changes.snapshots.iter().for_each(|s| {
+            let s_len = s.file_hashes.lock().unwrap().len();
+            println!("{} ---- {}", s_len, s.root_path);
+            count += s_len
+        });
         // println!("{:#?}", file_changes.snapshots);
+
+        let message = format!("{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",Local::now(), count);
+        println!("{}", message);
 
         file_changes
     }
@@ -55,27 +65,30 @@ impl FileChanges {
 
 impl EventMonitor for FileChanges {
     async fn check(&mut self) {
-        if self.step > 10 {
-            println!("check fs changes: {}", self.triggered);
+        if self.step > 20 { // FS check interval
+            // println!("check fs changes: {}", self.triggered);
             match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone())
                 .await
             {
                 None => {}
                 Some(e) => match e.0 {
-                    SnapshotChangeType::None => {}
+                    SnapshotChangeType::None => {
+                        // let message = format!("{} :: File System Unchanged",Local::now());
+                        // println!("{}", message);
+                    }
                     SnapshotChangeType::Created => {
-                        println!("File Created Alert!\n{:#?}", e.1);
-                        let message = format!("File Creation Detected: {:?}", e.1.created);
+                        // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :: File Creation Detected: {:?}",Local::now() , e.1.created);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                     SnapshotChangeType::Deleted => {
-                        println!("File Deleted Alert!\n{:#?}", e.1);
-                        let message = format!("File Deletion Detected: {:?}", e.1.deleted);
+                        // println!("{} :: File Deleted Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :: File Deletion Detected: {:?}",Local::now() , e.1.deleted);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                     SnapshotChangeType::Changed => {
-                        println!("File Change Alert!\n{:#?}", e.1);
-                        let message = format!("File Change Detected: {:?}", e.1.changed);
+                        // println!("{} :: File Change Alert!\n{:#?}", Local::now(), e.1);
+                        let message = format!("{} :: File Change Detected: {:?}",Local::now() , e.1.changed);
                         fs_changes_alert(message, self.settings_map.clone()).await
                     }
                 },
@@ -93,8 +106,16 @@ fn load_directories(settings_map: Config) -> Vec<String> {
     let mut dirs: Vec<String> = vec![];
     let mon_dirs = settings_map.get::<Vec<String>>("fs_mon_dir").unwrap();
     for i in mon_dirs.iter() {
-        dirs.push(i.to_string())
+        if i.contains('$') {
+            let env_var = i.replace("$", "");
+            let env_ret = env::var(env_var).unwrap();
+            let split = env_ret.split(":").collect::<Vec<&str>>();
+            split.iter().for_each(|e| dirs.push(e.to_string()))
+        } else {
+            dirs.push(i.to_string())
+        }
     }
+    println!("Monitoring Directories: {:#?}", dirs);
     dirs
 }
 
@@ -155,7 +176,7 @@ async fn compare_all_snapshots(
             Snapshot::new(i.root_path.as_ref(), i.hash_type, black_list.clone(), false)
         {
             if let Some(res) = compare_snapshots(i.clone(), rehash.clone(), false) {
-                println!("{}", i.root_path);
+                // println!("{}", i.root_path);
                 for c in res.1.created {
                     created.push(c)
                 }
@@ -187,9 +208,11 @@ async fn compare_all_snapshots(
         return_type = SnapshotChangeType::Changed;
     }
 
-    println!("created: {:?}", created);
-    println!("deleted: {:?}", deleted);
-    println!("changed: {:?}", changed);
+    // if !created.is_empty() || !deleted.is_empty() || !changed.is_empty() {
+    //     println!("created: {:?}", created);
+    //     println!("deleted: {:?}", deleted);
+    //     println!("changed: {:?}", changed);
+    // }
 
     Some((
         return_type,

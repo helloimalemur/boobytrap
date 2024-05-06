@@ -2,6 +2,7 @@ use crate::monitors::actions::reboot_system;
 use crate::tw::EventMonitor;
 use config::Config;
 use std::collections::HashMap;
+use chrono::Local;
 
 #[allow(unused)]
 pub struct NETMon {
@@ -26,10 +27,10 @@ impl EventMonitor for NETMon {
             self.triggered = !check
         }
         if self.triggered {
-            println!("ALERT NET");
+            println!("{} :: ALERT NET", Local::now());
             net_alert(self.settings_map.clone()).await;
         }
-        println!("check net: {}", self.triggered);
+        // println!("check net: {}", self.triggered);
     }
 }
 
