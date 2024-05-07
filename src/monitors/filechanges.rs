@@ -18,10 +18,11 @@ pub struct FileChanges {
     hash_type: HashType,
     settings_map: Config,
     black_list: Vec<String>,
+    app_cache_path: String,
 }
 
 impl FileChanges {
-    pub fn new(settings_map: Config, blacklist_file_path: String) -> Self {
+    pub fn new(settings_map: Config, blacklist_file_path: String, app_cache_path: String) -> Self {
         let mut file_changes = FileChanges {
             triggered: false,
             step: 0,
@@ -30,6 +31,7 @@ impl FileChanges {
             hash_type: get_hash_type(settings_map.clone()),
             settings_map,
             black_list: load_blacklist(blacklist_file_path),
+            app_cache_path
         };
 
         // load and push blacklisted directories
