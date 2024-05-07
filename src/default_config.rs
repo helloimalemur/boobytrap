@@ -38,7 +38,7 @@ fn default_config() -> &'static str {
     r#"
 ## General settings
 tick_delay_seconds = "5"
-fs_tick_delay_seconds = "60"
+fs_tick_delay_seconds = "30"
 
 ### File System Integrity
 fs_mon_enabled = "true"
