@@ -243,6 +243,7 @@ mod tests {
 
     #[test]
     fn test_load_blacklist() {
+
         let x = load_blacklist();
         println!("{:#?}", x);
     }
