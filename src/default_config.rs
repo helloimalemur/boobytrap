@@ -1,11 +1,26 @@
 use std::fs;
+use std::path::Path;
+
+pub fn get_cache_dir() -> String {
+    #[allow(unused)]
+    let mut cache_dir = String::new();
+    let cur_user = whoami::username();
+    return if cur_user.eq_ignore_ascii_case("root") {
+        let _ = fs::create_dir_all(Path::new("/root/.cache/boobytrap/config/"));
+        "/root/.cache/boobytrap/".to_string()
+    } else {
+        let create_dir = format!("/home/{}/.cache/boobytrap/config/", cur_user);
+        let _ = fs::create_dir_all(Path::new(create_dir.as_str()));
+        format!("/home/{}/.cache/boobytrap/", cur_user)
+    };
+}
 
 pub fn write_default_blacklist<T: ToString>(path: T) {
     let _ = fs::write(path.to_string(), default_blacklist());
 }
 
 fn default_blacklist() -> &'static str {
-r#"
+    r#"
 /etc/mtab
 "#
 }
@@ -20,7 +35,7 @@ pub fn write_default_config<T: ToString>(path: T) {
 }
 
 fn default_config() -> &'static str {
-r#"
+    r#"
 ## General settings
 tick_delay_seconds = "5"
 fs_tick_delay_seconds = "60"
