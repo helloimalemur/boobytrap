@@ -81,6 +81,7 @@ impl FileChanges {
             let root_path_hash = blake3::hash(snapshot.root_path.as_bytes()).to_string();
             // println!("Exporting: {}", root_path_hash);
             let path = format!("{}/snapshots/{}", self.app_cache_path, root_path_hash);
+            // println!("{:?}", snapshot);
             if filesystem_hashing::export_snapshot(snapshot.clone(), path, true, false).is_err() {
                 println!("WARNING: could not save state")
             }
@@ -90,19 +91,25 @@ impl FileChanges {
     fn load_state(&mut self) {
         let snapshots_path = format!("{}snapshots/", self.app_cache_path);
         let mut snapshots: Vec<Snapshot> = vec![];
+        let mut count = 0;
         if Path::new(snapshots_path.as_str()).exists() {
             let dir_vec = walkdir::WalkDir::new(snapshots_path)
+                .contents_first(true)
                 .into_iter()
                 .map(|e| e.unwrap().path().to_str().unwrap().to_string())
+                .filter(|a| {Path::new(a).is_file()})
                 .collect::<Vec<String>>();
-
+            // println!("{:?}", dir_vec);
             dir_vec.iter().for_each(|dir| {
-                snapshots.push(filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap())
+                println!("{}", dir);
+                let import = filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap();
+                count += import.file_hashes.lock().unwrap().len();
+                snapshots.push(import)
             });
 
             self.snapshots.clone_from(&snapshots);
-            println!("State Loaded..");
-            drop(snapshots)
+            println!("State Loaded..{} files", count);
+            // drop(snapshots)
             // println!("{:?}", dir_vec);
         }
     }
@@ -117,6 +124,7 @@ impl EventMonitor for FileChanges {
                 SnapshotChangeType::None => {
                     // let message = format!("{} :: File System Unchanged",Local::now());
                     // println!("{}", message);
+                    print!(".")
                 }
                 SnapshotChangeType::Created => {
                     // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
