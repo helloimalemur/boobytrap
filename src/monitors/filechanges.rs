@@ -115,7 +115,9 @@ impl EventMonitor for FileChanges {
     fn save_state(&mut self) {
         self.snapshots.iter().for_each(|snapshot: &Snapshot| {
             let path = format!("{}/snapshots/{}", self.app_cache_path, snapshot.uuid);
-            filesystem_hashing::export_snapshot(snapshot.clone(), path, false, false).unwrap()
+            if filesystem_hashing::export_snapshot(snapshot.clone(), path, true, false).is_err() {
+                println!("WARNING: could not save state")
+            }
         });
 
     }
