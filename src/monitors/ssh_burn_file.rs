@@ -81,4 +81,12 @@ impl EventMonitor for SSHBurnMon {
             self.last_check = Utc::now();
         }
     }
+
+    fn save_state(&mut self) {
+        todo!()
+    }
+
+    fn load_state(&mut self) {
+        todo!()
+    }
 }

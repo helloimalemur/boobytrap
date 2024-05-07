@@ -32,6 +32,14 @@ impl EventMonitor for NETMon {
         }
         // println!("check net: {}", self.triggered);
     }
+
+    fn save_state(&mut self) {
+        todo!()
+    }
+
+    fn load_state(&mut self) {
+        todo!()
+    }
 }
 
 async fn net_alert(settings_map: Config) {

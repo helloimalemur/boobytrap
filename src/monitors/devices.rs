@@ -81,6 +81,14 @@ impl EventMonitor for USBMon {
             self.triggered = false;
         }
     }
+
+    fn save_state(&mut self) {
+        todo!()
+    }
+
+    fn load_state(&mut self) {
+        todo!()
+    }
 }
 
 async fn get_usb_devices() -> Vec<String> {
