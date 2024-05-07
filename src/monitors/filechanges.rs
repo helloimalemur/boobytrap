@@ -130,12 +130,13 @@ impl EventMonitor for FileChanges {
     async fn check(&mut self) {
         match compare_all_snapshots(self, self.settings_map.clone(), self.black_list.clone()).await
         {
-            None => {}
+            None => {
+                println!("...");
+            }
             Some(e) => match e.0 {
                 SnapshotChangeType::None => {
                     // let message = format!("{} :: File System Unchanged",Local::now());
-                    // println!("{}", message);
-                    print!(".")
+                    println!(".");
                 }
                 SnapshotChangeType::Created => {
                     // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
