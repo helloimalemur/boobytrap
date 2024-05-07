@@ -1,25 +1,16 @@
-# Boobytrap
-#### (work-in-progress)
-## Detect and Act on unauthorized access of any kind from any source
+use std::fs;
 
-### Detect and Act on;
-    - an increase of USB devices
-    - network issues or network failure
-    - filesystem changes
-    - ssh "burn file"
+pub fn write_default_config<T: ToString>(path: T) {
+    if fs::write(path.to_string(), default_config()).is_ok() {
+        println!(
+            "{}\n ~~~~~~~ UNABLE TO LOCATE CONFIG FILE - DEFAULT CONFIG CREATED ~~~~~~~",
+            default_config()
+        );
+    }
+}
 
-#### Observed memory usage <100MB to ~1GB
-
-### Install
-```shell
-$ sudo bash -e install.sh
-or
-$ cargo install boobytrap
-```
-
-# Setup
-### create config/Settings.toml
-```shell
+fn default_config() -> &'static str {
+    r#"
 ## General settings
 tick_delay_seconds = "5"
 fs_tick_delay_seconds = "60"
@@ -51,9 +42,5 @@ net_mon_enabled = "false"
 ######## Notification settings
 discord_webhook_url = "https://discord.com/api/webhooks/"
 discord_webhook_avatar_name = "Lazarus"
-```
-
-## Development and Collaboration
-#### Feel free to open a pull request, please run the following prior to your submission please!
-    echo "Run clippy"; cargo clippy -- -D clippy::all
-    echo "Format source code"; cargo fmt -- --check
+    "#
+}

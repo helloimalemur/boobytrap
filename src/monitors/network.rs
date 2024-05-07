@@ -1,5 +1,5 @@
-use crate::monitors::actions::reboot_system;
 use crate::boobytrap::EventMonitor;
+use crate::monitors::actions::reboot_system;
 use chrono::Local;
 use config::Config;
 

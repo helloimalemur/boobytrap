@@ -1,8 +1,11 @@
+use crate::default_config::write_default_config;
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
+use std::fs;
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
 
@@ -22,14 +25,41 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
+        AppState {
+            mon_usb: true,
+            detection_triggered: false,
+            monitors: Arc::new(Mutex::new(vec![])),
+            settings_map: Config::default(),
+        }
+    }
+
+    pub fn config(&mut self) {
+        println!("Config..");
+        // check for config file if it doesn't exist write default config
+        #[allow(unused)]
+        let mut cache_dir = String::new();
+        let cur_user = whoami::username();
+        if cur_user.eq_ignore_ascii_case("root") {
+            let _ = fs::create_dir_all(Path::new("/root/.cache/boobytrap/config/"));
+            cache_dir = "/root/.cache/boobytrap/".to_string();
+        } else {
+            let create_dir = format!("/home/{}/.cache/boobytrap/config/", cur_user);
+            let _ = fs::create_dir_all(Path::new(create_dir.as_str()));
+            cache_dir = format!("/home/{}/.cache/boobytrap/", cur_user);
+        }
+
+        let settings_file_path = format!("{}config/Settings.toml", cache_dir);
+
+        if !Path::new(settings_file_path.as_str()).exists() {
+            println!("Settings.toml does not exist");
+            write_default_config(settings_file_path.clone());
+        }
+
         let config = Config::builder();
         let settings = config
-            .add_source(config::File::with_name("config/Settings.toml"))
+            .add_source(config::File::with_name(settings_file_path.as_str()))
             .build()
             .unwrap();
-        // let settings_map = settings
-        //     .try_deserialize::<HashMap<String, String>>()
-        //     .unwrap();
 
         let mut monitors: Vec<Monitors> = vec![];
 
@@ -63,12 +93,8 @@ impl AppState {
             monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
         }
 
-        AppState {
-            mon_usb: true,
-            detection_triggered: false,
-            monitors: Arc::new(Mutex::new(monitors)),
-            settings_map: settings,
-        }
+        self.monitors.clone_from(&Arc::new(Mutex::new(monitors)));
+        self.settings_map.clone_from(&settings)
     }
 
     pub async fn run(&mut self) {
