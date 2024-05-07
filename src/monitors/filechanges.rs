@@ -143,7 +143,6 @@ fn get_hash_type(settings_map: Config) -> HashType {
 
 fn load_blacklist(blacklist_file_path: String) -> Vec<String> {
     let mut black_list: Vec<String> = vec![];
-
     if let Ok(file) = fs::read_to_string(Path::new(&blacklist_file_path)) {
         for line in file.lines() {
             if !line.is_empty() {
@@ -151,7 +150,6 @@ fn load_blacklist(blacklist_file_path: String) -> Vec<String> {
             }
         }
     }
-
     black_list
 }
 
@@ -177,7 +175,6 @@ async fn compare_all_snapshots(
     let mut created: Vec<String> = vec![];
     let mut deleted: Vec<String> = vec![];
     let mut changed: Vec<String> = vec![];
-
     let mut to_remove: Vec<usize> = vec![];
     let mut new_sn: Vec<Snapshot> = vec![];
 
