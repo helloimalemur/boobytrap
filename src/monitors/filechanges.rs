@@ -75,12 +75,11 @@ impl FileChanges {
 
     fn save_state(&mut self) {
         let snapshots_path = format!("{}snapshots/", self.app_cache_path);
-        println!("{}", snapshots_path);
+        // println!("{}", snapshots_path);
         let _ = fs::create_dir_all(Path::new(snapshots_path.as_str()));
-
         self.snapshots.iter().for_each(|snapshot: &Snapshot| {
             let root_path_hash = blake3::hash(snapshot.root_path.as_bytes()).to_string();
-            println!("Exporting: {}", root_path_hash);
+            // println!("Exporting: {}", root_path_hash);
             let path = format!("{}/snapshots/{}", self.app_cache_path, root_path_hash);
             if filesystem_hashing::export_snapshot(snapshot.clone(), path, true, false).is_err() {
                 println!("WARNING: could not save state")
