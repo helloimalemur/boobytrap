@@ -232,12 +232,6 @@ async fn compare_all_snapshots(
         return_type = SnapshotChangeType::Changed;
     }
 
-    // if !created.is_empty() || !deleted.is_empty() || !changed.is_empty() {
-    //     println!("created: {:?}", created);
-    //     println!("deleted: {:?}", deleted);
-    //     println!("changed: {:?}", changed);
-    // }
-
     Some((
         return_type,
         SnapshotCompareResult {
@@ -259,7 +253,7 @@ mod tests {
 
     #[test]
     fn test_load_blacklist() {
-        let x = load_blacklist();
+        let x = load_blacklist("".to_string());
         println!("{:#?}", x);
     }
 }
