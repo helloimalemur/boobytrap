@@ -7,6 +7,7 @@ use filesystem_hashing::snapshot::Snapshot;
 use filesystem_hashing::{compare_snapshots, create_snapshot};
 use std::path::Path;
 use std::{env, fs};
+use std::sync::{Arc, Mutex};
 
 #[allow(unused)]
 #[derive(Debug)]
@@ -82,7 +83,16 @@ impl FileChanges {
             // println!("Exporting: {}", root_path_hash);
             let path = format!("{}/snapshots/{}", self.app_cache_path, root_path_hash);
             // println!("{:?}", snapshot);
-            if filesystem_hashing::export_snapshot(snapshot.clone(), path, true, false).is_err() {
+            let sn = Snapshot {
+                file_hashes: Arc::new(Mutex::new(snapshot.file_hashes.lock().unwrap().clone())),
+                black_list: snapshot.black_list.clone(),
+                root_path: snapshot.root_path.clone(),
+                hash_type: HashType::BLAKE3,
+                uuid: snapshot.uuid.clone(),
+                date_created: snapshot.date_created.clone(),
+            };
+
+            if filesystem_hashing::export_snapshot(sn, path, true, false).is_err() {
                 println!("WARNING: could not save state")
             }
         });
