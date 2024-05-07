@@ -83,7 +83,7 @@ impl AppState {
             monitors.push(Monitors::FileChanges(FileChanges::new(
                 settings.clone(),
                 blacklist_file_path,
-                cache_dir
+                cache_dir,
             )));
         }
         self.monitors.clone_from(&Arc::new(Mutex::new(monitors)));

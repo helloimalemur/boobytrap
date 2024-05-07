@@ -31,39 +31,44 @@ impl FileChanges {
             hash_type: get_hash_type(settings_map.clone()),
             settings_map,
             black_list: load_blacklist(blacklist_file_path),
-            app_cache_path
+            app_cache_path,
         };
 
         // load and push blacklisted directories
         println!("Blacklisted: {:?}", file_changes.black_list);
 
-        for dir in &file_changes.monitored_directories {
-            if !file_changes.black_list.contains(dir) {
-                if let Ok(snapshot) = create_snapshot(
-                    dir.as_str(),
-                    HashType::BLAKE3,
-                    file_changes.black_list.clone(),
-                    false,
-                ) {
-                    file_changes.snapshots.push(snapshot);
+        file_changes.load_state();
+
+        if file_changes.snapshots.is_empty() {
+            for dir in &file_changes.monitored_directories {
+                if !file_changes.black_list.contains(dir) {
+                    if let Ok(snapshot) = create_snapshot(
+                        dir.as_str(),
+                        HashType::BLAKE3,
+                        file_changes.black_list.clone(),
+                        false,
+                    ) {
+                        file_changes.snapshots.push(snapshot);
+                    }
                 }
             }
-        }
-        let mut count = 0;
-        println!("File Count:");
-        file_changes.snapshots.iter().for_each(|s| {
-            let s_len = s.file_hashes.lock().unwrap().len();
-            println!("{} ---- {}", s_len, s.root_path);
-            count += s_len
-        });
-        // println!("{:#?}", file_changes.snapshots);
+            let mut count = 0;
+            println!("File Count:");
+            file_changes.snapshots.iter().for_each(|s| {
+                let s_len = s.file_hashes.lock().unwrap().len();
+                println!("{} ---- {}", s_len, s.root_path);
+                count += s_len
+            });
+            // println!("{:#?}", file_changes.snapshots);
 
-        let message = format!(
-            "{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",
-            Local::now(),
-            count
-        );
-        println!("{}", message);
+            let message = format!(
+                "{} :: Filesystem Snapshot Creation Successful\n\nTotal files: {}\n",
+                Local::now(),
+                count
+            );
+            println!("{}", message);
+        }
+
         file_changes.save_state();
         file_changes
     }
@@ -81,12 +86,26 @@ impl FileChanges {
                 println!("WARNING: could not save state")
             }
         });
-
     }
 
-    // fn load_state(&mut self) {
-    //
-    // }
+    fn load_state(&mut self) {
+        let snapshots_path = format!("{}snapshots/", self.app_cache_path);
+        let mut snapshots: Vec<Snapshot> = vec![];
+
+        let dir_vec = walkdir::WalkDir::new(snapshots_path)
+            .into_iter()
+            .map(|e| e.unwrap().path().to_str().unwrap().to_string())
+            .collect::<Vec<String>>();
+
+        dir_vec.iter().for_each(|dir| {
+            snapshots.push(filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap())
+        });
+
+        self.snapshots.clone_from(&snapshots);
+        println!("State Loaded..");
+        drop(snapshots)
+        // println!("{:?}", dir_vec);
+    }
 }
 
 impl EventMonitor for FileChanges {
