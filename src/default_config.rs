@@ -8,7 +8,6 @@ pub fn write_default_config(path: String) {
             default_config()
         );
     }
-    exit(1)
 }
 
 fn default_config() -> &'static str {
