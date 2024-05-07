@@ -143,6 +143,4 @@ impl AppState {
 
 pub trait EventMonitor {
     async fn check(&mut self);
-    fn save_state(&mut self);
-    fn load_state(&mut self);
 }
