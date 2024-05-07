@@ -1,8 +1,7 @@
 use std::fs;
-use std::process::exit;
 
-pub fn write_default_config(path: String) {
-    if fs::write(path, default_config()).is_ok() {
+pub fn write_default_config<T: ToString>(path: T) {
+    if fs::write(path.to_string(), default_config()).is_ok() {
         println!(
             "{}\n ~~~~~~~ UNABLE TO LOCATE CONFIG FILE - DEFAULT CONFIG CREATED ~~~~~~~",
             default_config()
