@@ -1,5 +1,15 @@
 use std::fs;
 
+pub fn write_default_blacklist<T: ToString>(path: T) {
+    let _ = fs::write(path.to_string(), default_blacklist());
+}
+
+fn default_blacklist() -> &'static str {
+r#"
+/etc/mtab
+"#
+}
+
 pub fn write_default_config<T: ToString>(path: T) {
     if fs::write(path.to_string(), default_config()).is_ok() {
         println!(
@@ -10,7 +20,7 @@ pub fn write_default_config<T: ToString>(path: T) {
 }
 
 fn default_config() -> &'static str {
-    r#"
+r#"
 ## General settings
 tick_delay_seconds = "5"
 fs_tick_delay_seconds = "60"
@@ -42,5 +52,5 @@ net_mon_enabled = "false"
 ######## Notification settings
 discord_webhook_url = "https://discord.com/api/webhooks/"
 discord_webhook_avatar_name = "Lazarus"
-    "#
+"#
 }

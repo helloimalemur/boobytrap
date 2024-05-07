@@ -21,7 +21,7 @@ pub struct FileChanges {
 }
 
 impl FileChanges {
-    pub fn new(settings_map: Config) -> Self {
+    pub fn new(settings_map: Config, blacklist_file_path: String) -> Self {
         let mut file_changes = FileChanges {
             triggered: false,
             step: 0,
@@ -29,7 +29,7 @@ impl FileChanges {
             snapshots: vec![],
             hash_type: get_hash_type(settings_map.clone()),
             settings_map,
-            black_list: load_blacklist(),
+            black_list: load_blacklist(blacklist_file_path),
         };
 
         // load and push blacklisted directories
@@ -141,12 +141,14 @@ fn get_hash_type(settings_map: Config) -> HashType {
     }
 }
 
-fn load_blacklist() -> Vec<String> {
+fn load_blacklist(blacklist_file_path: String) -> Vec<String> {
     let mut black_list: Vec<String> = vec![];
 
-    if let Ok(file) = fs::read_to_string(Path::new("config/file_mon_blacklist")) {
+    if let Ok(file) = fs::read_to_string(Path::new(&blacklist_file_path)) {
         for line in file.lines() {
-            black_list.push(line.to_string());
+            if !line.is_empty() {
+                black_list.push(line.to_string());
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-use crate::default_config::write_default_config;
+use crate::default_config::{write_default_blacklist, write_default_config};
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
 use crate::monitors::network::NETMon;
@@ -49,10 +49,15 @@ impl AppState {
         }
 
         let settings_file_path = format!("{}config/Settings.toml", cache_dir);
-
         if !Path::new(settings_file_path.as_str()).exists() {
             println!("Settings.toml does not exist");
             write_default_config(settings_file_path.clone());
+        }
+
+        let blacklist_file_path = format!("{}config/file_mon_blacklist", cache_dir);
+        if !Path::new(blacklist_file_path.as_str()).exists() {
+            println!("file_mon_blacklist does not exist");
+            write_default_blacklist(blacklist_file_path.clone());
         }
 
         let config = Config::builder();
@@ -90,7 +95,7 @@ impl AppState {
             .unwrap()
             .eq_ignore_ascii_case("true")
         {
-            monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
+            monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone(), blacklist_file_path)));
         }
 
         self.monitors.clone_from(&Arc::new(Mutex::new(monitors)));
