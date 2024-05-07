@@ -25,47 +25,6 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
-        // let config = Config::builder();
-        // let settings = config
-        //     .add_source(config::File::with_name("config/Settings.toml"))
-        //     .build()
-        //     .unwrap();
-        // // let settings_map = settings
-        // //     .try_deserialize::<HashMap<String, String>>()
-        // //     .unwrap();
-        //
-        // let mut monitors: Vec<Monitors> = vec![];
-        //
-        // if settings
-        //     .get::<String>("usb_mon_enabled")
-        //     .unwrap()
-        //     .eq_ignore_ascii_case("true")
-        // {
-        //     monitors.push(Monitors::USBMon(USBMon::new(settings.clone())));
-        // }
-        // if settings
-        //     .get::<String>("net_mon_enabled")
-        //     .unwrap()
-        //     .eq_ignore_ascii_case("true")
-        // {
-        //     monitors.push(Monitors::NetMon(NETMon::new(settings.clone())));
-        // }
-        // if settings
-        //     .get::<String>("burn_file_mon_enabled")
-        //     .unwrap()
-        //     .eq_ignore_ascii_case("true")
-        // {
-        //     monitors.push(Monitors::SSHBurnMon(SSHBurnMon::new(settings.clone())));
-        // }
-        //
-        // if settings
-        //     .get::<String>("fs_mon_enabled")
-        //     .unwrap()
-        //     .eq_ignore_ascii_case("true")
-        // {
-        //     monitors.push(Monitors::FileChanges(FileChanges::new(settings.clone())));
-        // }
-
         AppState {
             mon_usb: true,
             detection_triggered: false,
