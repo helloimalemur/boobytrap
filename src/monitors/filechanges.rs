@@ -91,20 +91,21 @@ impl FileChanges {
     fn load_state(&mut self) {
         let snapshots_path = format!("{}snapshots/", self.app_cache_path);
         let mut snapshots: Vec<Snapshot> = vec![];
+        if Path::new(snapshots_path.as_str()).exists() {
+            let dir_vec = walkdir::WalkDir::new(snapshots_path)
+                .into_iter()
+                .map(|e| e.unwrap().path().to_str().unwrap().to_string())
+                .collect::<Vec<String>>();
 
-        let dir_vec = walkdir::WalkDir::new(snapshots_path)
-            .into_iter()
-            .map(|e| e.unwrap().path().to_str().unwrap().to_string())
-            .collect::<Vec<String>>();
+            dir_vec.iter().for_each(|dir| {
+                snapshots.push(filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap())
+            });
 
-        dir_vec.iter().for_each(|dir| {
-            snapshots.push(filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap())
-        });
-
-        self.snapshots.clone_from(&snapshots);
-        println!("State Loaded..");
-        drop(snapshots)
-        // println!("{:?}", dir_vec);
+            self.snapshots.clone_from(&snapshots);
+            println!("State Loaded..");
+            drop(snapshots)
+            // println!("{:?}", dir_vec);
+        }
     }
 }
 
