@@ -38,7 +38,7 @@ impl FileChanges {
         // load and push blacklisted directories
         println!("Blacklisted: {:?}", file_changes.black_list);
 
-        file_changes.load_state();
+        // file_changes.load_state();
 
         if file_changes.snapshots.is_empty() {
             for dir in &file_changes.monitored_directories {
@@ -113,6 +113,7 @@ impl FileChanges {
             dir_vec.iter().for_each(|dir| {
                 println!("{}", dir);
                 let import = filesystem_hashing::import_snapshot(dir.to_string(), false).unwrap();
+                // println!("{:?}", import);
                 count += import.file_hashes.lock().unwrap().len();
                 snapshots.push(import)
             });
