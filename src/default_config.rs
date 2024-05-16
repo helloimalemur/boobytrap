@@ -6,12 +6,12 @@ pub fn get_cache_dir() -> String {
     let mut cache_dir = String::new();
     let cur_user = whoami::username();
     return if cur_user.eq_ignore_ascii_case("root") {
-        let _ = fs::create_dir_all(Path::new("/root/.cache/boobytrap/config/"));
-        "/root/.cache/boobytrap/".to_string()
+        let _ = fs::create_dir_all(Path::new("/root/.config/boobytrap/config/"));
+        "/root/.config/boobytrap/".to_string()
     } else {
-        let create_dir = format!("/home/{}/.cache/boobytrap/config/", cur_user);
+        let create_dir = format!("/home/{}/.config/boobytrap/config/", cur_user);
         let _ = fs::create_dir_all(Path::new(create_dir.as_str()));
-        format!("/home/{}/.cache/boobytrap/", cur_user)
+        format!("/home/{}/.config/boobytrap/", cur_user)
     };
 }
 
@@ -57,7 +57,7 @@ unmount_crypt_on_file_burn = "true"
 ssh_check_burn_host = "hostname"
 ssh_check_burn_user = "root"
 ssh_check_burn_key = "/home/user/.ssh/id_rsa"
-ssh_check_burn_path = "/root/.cache/burn"
+ssh_check_burn_path = "/root/.config/burn"
 ssh_check_burn_check_interval = "30"
 burn_path_1 = "/root/test/"
 

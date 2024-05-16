@@ -41,7 +41,7 @@ unmount_crypt_on_file_burn = "true"
 ssh_check_burn_host = "hostname"
 ssh_check_burn_user = "root"
 ssh_check_burn_key = "/home/user/.ssh/id_rsa"
-ssh_check_burn_path = "/root/.cache/burn"
+ssh_check_burn_path = "/root/.config/burn"
 ssh_check_burn_check_interval = "30"
 burn_path_1 = "/root/test/"
 
