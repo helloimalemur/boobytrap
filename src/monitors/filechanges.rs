@@ -136,7 +136,7 @@ impl EventMonitor for FileChanges {
             Some(e) => match e.0 {
                 SnapshotChangeType::None => {
                     // let message = format!("{} :: File System Unchanged",Local::now());
-                    println!(".");
+                    println!(".. no changes ..");
                 }
                 SnapshotChangeType::Created => {
                     // println!("{} :: File Created Alert!\n{:#?}", Local::now(), e.1);
