@@ -41,6 +41,7 @@ tick_delay_seconds = "5"
 fs_tick_delay_seconds = "300"
 
 ### File System Integrity
+fs_mon_path_variable = true
 fs_mon_enabled = "true"
 fs_mon_dir = ["/etc", "/bin", "$PATH"]
 fs_mon_hash_type = "blake3"

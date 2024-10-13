@@ -41,6 +41,26 @@ impl FileChanges {
         // file_changes.load_state();
 
         if file_changes.snapshots.is_empty() {
+
+            if let Ok(b) = file_changes.settings_map.get::<bool>("fs_mon_path_variable") {
+                if b {
+                    let path = env::var("PATH").unwrap_or_else(|_| String::new());
+                    let split = path.split(':').collect::<Vec<&str>>();
+                    for s in split {
+                        if !file_changes.black_list.contains(&s.to_string()) {
+                            if let Ok(snapshot) = create_snapshot(
+                                s,
+                                HashType::BLAKE3,
+                                file_changes.black_list.clone(),
+                                false,
+                            ) {
+                                file_changes.snapshots.push(snapshot);
+                            }
+                        }
+                    }
+                }
+            }
+
             for dir in &file_changes.monitored_directories {
                 if !file_changes.black_list.contains(dir) {
                     if let Ok(snapshot) = create_snapshot(
