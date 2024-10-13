@@ -8,6 +8,10 @@ use std::path::Path;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
 
+pub trait EventMonitor {
+    async fn check(&mut self);
+}
+
 #[derive(Debug)]
 pub enum Monitors {
     USBMon(USBMon),
@@ -139,8 +143,4 @@ impl AppState {
             }
         }
     }
-}
-
-pub trait EventMonitor {
-    async fn check(&mut self);
 }

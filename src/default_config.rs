@@ -5,14 +5,14 @@ pub fn get_cache_dir() -> String {
     #[allow(unused)]
     let mut cache_dir = String::new();
     let cur_user = whoami::username();
-    return if cur_user.eq_ignore_ascii_case("root") {
+    if cur_user.eq_ignore_ascii_case("root") {
         let _ = fs::create_dir_all(Path::new("/root/.config/boobytrap/config/"));
         "/root/.config/boobytrap/".to_string()
     } else {
         let create_dir = format!("/home/{}/.config/boobytrap/config/", cur_user);
         let _ = fs::create_dir_all(Path::new(create_dir.as_str()));
         format!("/home/{}/.config/boobytrap/", cur_user)
-    };
+    }
 }
 
 pub fn write_default_blacklist<T: ToString>(path: T) {
