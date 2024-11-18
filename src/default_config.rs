@@ -78,13 +78,17 @@ pub fn setup_service() {
 }
 
 pub fn write_service_file<T: ToString>(path: T) {
-    if fs::write(path.to_string(), service_file()).is_ok() {
-        println!(
-            "{}\n ~~~~~~~ SERVICE CONFIG CREATED ~~~~~~~",
-            default_config()
-        );
+    if whoami::username().eq_ignore_ascii_case("root") {
+        if fs::write(path.to_string(), service_file()).is_ok() {
+            println!(
+                "{}\n ~~~~~~~ SERVICE CONFIG CREATED ~~~~~~~",
+                service_file()
+            );
+        } else {
+            println!("{}", "COULD NOT WRITE SERVICE CONFIG TO FILE");
+        }
     } else {
-        println!("{}", "COULD NOT WRITE SERVICE CONFIG TO FILE");
+        println!("{}", "PLEASE RUN AS ROOT - COULD NOT WRITE SERVICE CONFIG TO FILE");
     }
 }
 
@@ -97,7 +101,7 @@ Description=Boobytrap
 Type=simple
 User=root
 Group=root
-ExecStart=boobytrap
+ExecStart=/root/.cargo/bin/boobytrap
 
 [Install]
 WantedBy=multi-user.target
