@@ -74,7 +74,7 @@ discord_webhook_avatar_name = "Lazarus"
 
 
 pub fn setup_service() {
-    let service_file = r#""#;
+    write_service_file("/etc/systemd/system/boobytrap.service");
 }
 
 pub fn write_service_file<T: ToString>(path: T) {
@@ -83,6 +83,8 @@ pub fn write_service_file<T: ToString>(path: T) {
             "{}\n ~~~~~~~ SERVICE CONFIG CREATED ~~~~~~~",
             default_config()
         );
+    } else {
+        println!("{}", "COULD NOT WRITE SERVICE CONFIG TO FILE");
     }
 }
 
