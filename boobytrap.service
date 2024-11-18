@@ -5,7 +5,7 @@ Description=Boobytrap
 Type=simple
 User=root
 Group=root
-ExecStart=/var/lib/boobytrap/run.sh
+ExecStart=boobytrap
 
 [Install]
 WantedBy=multi-user.target

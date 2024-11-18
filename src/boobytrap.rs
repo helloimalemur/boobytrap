@@ -1,7 +1,7 @@
-use crate::default_config::{get_cache_dir, write_default_blacklist, write_default_config};
+use crate::default_config::{get_cache_dir, setup_service, write_default_blacklist, write_default_config};
 use crate::monitors::devices::USBMon;
 use crate::monitors::filechanges::FileChanges;
-use crate::monitors::network::NETMon;
+// use crate::monitors::network::NETMon;
 use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
 use std::path::Path;
@@ -15,7 +15,7 @@ pub trait EventMonitor {
 #[derive(Debug)]
 pub enum Monitors {
     USBMon(USBMon),
-    NetMon(NETMon),
+    // NetMon(NETMon),
     SSHBurnMon(SSHBurnMon),
     FileChanges(FileChanges),
 }
@@ -36,7 +36,12 @@ impl AppState {
         }
     }
 
-    pub fn config(&mut self) {
+    pub fn config(&mut self, args: Vec<String>) {
+        if args.contains(&"service".to_string()) {
+            setup_service();
+        }
+
+
         // check for config file if it doesn't exist write default config
         println!("Configuring..");
         let cache_dir = get_cache_dir();
@@ -65,13 +70,13 @@ impl AppState {
         {
             monitors.push(Monitors::USBMon(USBMon::new(settings.clone())));
         }
-        if settings
-            .get::<String>("net_mon_enabled")
-            .unwrap()
-            .eq_ignore_ascii_case("true")
-        {
-            monitors.push(Monitors::NetMon(NETMon::new(settings.clone())));
-        }
+        // if settings
+        //     .get::<String>("net_mon_enabled")
+        //     .unwrap()
+        //     .eq_ignore_ascii_case("true")
+        // {
+        //     monitors.push(Monitors::NetMon(NETMon::new(settings.clone())));
+        // }
         if settings
             .get::<String>("burn_file_mon_enabled")
             .unwrap()
@@ -119,10 +124,10 @@ impl AppState {
                         // println!("{:#?}", e);
                         e.check().await;
                     }
-                    Monitors::NetMon(e) => {
-                        // println!("{:#?}", e);
-                        e.check().await;
-                    }
+                    // Monitors::NetMon(e) => {
+                    //     // println!("{:#?}", e);
+                    //     e.check().await;
+                    // }
                     Monitors::SSHBurnMon(e) => {
                         // println!("{:#?}", e);
                         e.check().await;

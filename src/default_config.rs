@@ -71,3 +71,33 @@ discord_webhook_url = "https://discord.com/api/webhooks/"
 discord_webhook_avatar_name = "Lazarus"
 "#
 }
+
+
+pub fn setup_service() {
+    let service_file = r#""#;
+}
+
+pub fn write_service_file<T: ToString>(path: T) {
+    if fs::write(path.to_string(), service_file()).is_ok() {
+        println!(
+            "{}\n ~~~~~~~ SERVICE CONFIG CREATED ~~~~~~~",
+            default_config()
+        );
+    }
+}
+
+fn service_file() -> &'static str {
+    r#"
+[Unit]
+Description=Boobytrap
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=boobytrap
+
+[Install]
+WantedBy=multi-user.target
+    "#
+}
