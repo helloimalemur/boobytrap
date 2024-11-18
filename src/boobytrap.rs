@@ -40,7 +40,7 @@ impl AppState {
         if args.contains(&"install-service".to_string()) {
             setup_service();
         }
-
+        // sed -i 's,discord_webhook_url = "https://discord.com/api/webhooks/",discord_webhook_url = "$WEBHOOKURL",g'
 
         // check for config file if it doesn't exist write default config
         println!("Configuring..");

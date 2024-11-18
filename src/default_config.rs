@@ -88,7 +88,7 @@ pub fn setup_service() {
         {
             println!("{}", String::from_utf8_lossy(&o.stdout));
             if let Ok(o) = process::Command::new("systemctl")
-                .arg("start")
+                .arg("restart")
                 .arg("boobytrap")
                 .output()
             {
