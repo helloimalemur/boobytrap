@@ -22,6 +22,7 @@ pub fn write_default_blacklist<T: ToString>(path: T) {
 fn default_blacklist() -> &'static str {
     r#"
 /etc/mtab
+/etc/cups
 "#
 }
 
