@@ -45,12 +45,19 @@ impl AppState {
         let settings_file_path = format!("{}config/Settings.toml", cache_dir);
 
         let mut webhook = String::new();
-        for arg in args {
-            if arg.contains("install-service") {
-                setup_service();
-            }
+        for arg in args.clone() {
             if arg.contains("webhook") {
                 webhook = arg.split("=").last().unwrap().to_string();
+            }
+        }
+        for arg in args.clone() {
+            if arg.contains("install-service") {
+                setup_service();
+                if !Path::new(settings_file_path.as_str()).exists() {
+                    println!("Settings.toml does not exist");
+                    write_default_config(settings_file_path.clone(), webhook.clone());
+                    exit(0);
+                }
             }
         }
 
