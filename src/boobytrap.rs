@@ -37,7 +37,7 @@ impl AppState {
     }
 
     pub fn config(&mut self, args: Vec<String>) {
-        if args.contains(&"service".to_string()) {
+        if args.contains(&"install-service".to_string()) {
             setup_service();
         }
 

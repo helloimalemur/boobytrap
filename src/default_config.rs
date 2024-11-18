@@ -1,5 +1,6 @@
-use std::fs;
+use std::{fs, process};
 use std::path::Path;
+use std::process::exit;
 
 pub fn get_cache_dir() -> String {
     #[allow(unused)]
@@ -75,6 +76,29 @@ discord_webhook_avatar_name = "Lazarus"
 
 pub fn setup_service() {
     write_service_file("/etc/systemd/system/boobytrap.service");
+    if let Ok(o) = process::Command::new("systemctl")
+        .arg("daemon-reload")
+        .output()
+    {
+        println!("{}", String::from_utf8_lossy(&o.stdout));
+        if let Ok(o) = process::Command::new("systemctl")
+            .arg("enable")
+            .arg("boobytrap")
+            .output()
+        {
+            println!("{}", String::from_utf8_lossy(&o.stdout));
+            if let Ok(o) = process::Command::new("systemctl")
+                .arg("start")
+                .arg("boobytrap")
+                .output()
+            {
+                println!("{}", String::from_utf8_lossy(&o.stdout));
+                exit(0)
+            }
+
+        }
+
+    }
 }
 
 pub fn write_service_file<T: ToString>(path: T) {
