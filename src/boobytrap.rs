@@ -6,6 +6,7 @@ use crate::monitors::ssh_burn_file::SSHBurnMon;
 use config::Config;
 use std::path::Path;
 use std::process;
+use std::process::exit;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, SystemTime};
 
@@ -38,6 +39,11 @@ impl AppState {
     }
 
     pub fn config(&mut self, args: Vec<String>) {
+        // check for config file if it doesn't exist write default config
+        println!("Configuring..");
+        let cache_dir = get_cache_dir();
+        let settings_file_path = format!("{}config/Settings.toml", cache_dir);
+
         let mut webhook = String::new();
         for arg in args {
             if arg.contains("install-service") {
@@ -48,25 +54,11 @@ impl AppState {
             }
         }
 
-        // check for config file if it doesn't exist write default config
-        println!("Configuring..");
-        let cache_dir = get_cache_dir();
-        let settings_file_path = format!("{}config/Settings.toml", cache_dir);
-        // sed -i 's,discord_webhook_url = "https://discord.com/api/webhooks/",discord_webhook_url = "$WEBHOOKURL",g'
-        let sed_command = format!("'s,discord_webhook_url = \"https://discord.com/api/webhooks/\",discord_webhook_url = \"{}\",g'", webhook);
-        if let Ok(o) = process::Command::new("sed")
-            .arg("-i")
-            .arg(sed_command.clone())
-            .arg(settings_file_path.clone())
-            .output() {
-            println!("{}", String::from_utf8_lossy(&o.stdout));
-        }
-
-
         if !Path::new(settings_file_path.as_str()).exists() {
             println!("Settings.toml does not exist");
-            write_default_config(settings_file_path.clone());
+            write_default_config(settings_file_path.clone(), webhook);
         }
+
         let blacklist_file_path = format!("{}config/file_mon_blacklist", cache_dir);
         if !Path::new(blacklist_file_path.as_str()).exists() {
             println!("file_mon_blacklist does not exist");

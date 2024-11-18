@@ -27,11 +27,11 @@ fn default_blacklist() -> &'static str {
 "#
 }
 
-pub fn write_default_config<T: ToString>(path: T) {
-    if fs::write(path.to_string(), default_config()).is_ok() {
+pub fn write_default_config<T: ToString>(path: T, webhook: String) {
+    if fs::write(path.to_string(), default_config().replace("https://discord.com/api/webhooks/", webhook.as_str())).is_ok() {
         println!(
             "{}\n ~~~~~~~ UNABLE TO LOCATE CONFIG FILE - DEFAULT CONFIG CREATED ~~~~~~~",
-            default_config()
+            default_config().replace("https://discord.com/api/webhooks/", webhook.as_str())
         );
     }
 }
@@ -93,11 +93,8 @@ pub fn setup_service() {
                 .output()
             {
                 println!("{}", String::from_utf8_lossy(&o.stdout));
-                exit(0)
             }
-
         }
-
     }
 }
 
