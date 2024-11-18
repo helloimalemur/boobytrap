@@ -12,9 +12,10 @@
 
 ### Install
 ```shell
-$ sudo bash -e install.sh
-or
-$ cargo install boobytrap
+## install binary
+cargo install boobytrap
+## configure service with discord webhook
+boobytrap install-service webhook=https://discordapp.com/api/webhooks/121946119953658680...
 ```
 
 # Setup
