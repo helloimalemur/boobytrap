@@ -28,8 +28,7 @@ impl USBMon {
 
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
-        let mut new_dev = String::new();
-        let mut miss_dev = String::new();
+        let mut dev_change = String::new();
         let mut new_devices: Vec<String> = vec![];
         let n = get_usb_devices_physical().await;
         n.iter().for_each(|r| new_devices.push(r.to_string()));
@@ -39,47 +38,36 @@ impl EventMonitor for USBMon {
         if self.last_check != 0 && self.last_check != new_devices.len() {
             self.total_devices = self.devices.len();
 
-
-            for entry in new_devices.iter() {
-                if !self.devices.contains(&entry) {
-                    new_dev = entry.clone();
-                }
-            }
-
-            for entry in self.devices.iter() {
-                if !new_devices.contains(&entry) {
-                    miss_dev = entry.clone();
-                }
-            }
-
-            println!("{:#?}", &new_devices.len());
-            println!("{:#?}", self.devices.len());
-            println!("{:#?}", &new_dev);
-
-
-
-            self.devices.clone_from(&new_devices);
-
             match self.last_check < new_devices.len() {
                 true => {
+                    for entry in new_devices.iter() {
+                        if !self.devices.contains(&entry) {
+                            dev_change = entry.clone();
+                        }
+                    }
                     self.triggered = true;
                     println!(
                         "{} :: Total USB devices INCREASED: {} :: {}",
                         Local::now(),
                         self.total_devices,
-                        &new_dev
+                        &dev_change
                     );
                 }
                 false => {
+                    for entry in self.devices.iter() {
+                        if !new_devices.contains(&entry) {
+                            dev_change = entry.clone();
+                        }
+                    }
                     println!(
                         "{} :: Total USB devices DECREASED: {} :: {}",
                         Local::now(),
                         self.total_devices,
-                        &new_dev
+                        &dev_change
                     );
                 }
             }
-
+            self.devices.clone_from(&new_devices);
             self.last_check = self.total_devices;
         } else if self.last_check == 0 {
             self.devices.clone_from(&new_devices);
@@ -101,7 +89,7 @@ impl EventMonitor for USBMon {
         if self.triggered {
             println!("ALERT USB");
             usb_triggered(self.settings_map.clone()).await;
-            println!("{} :: USB count: {} :: {}", Local::now(), self.total_devices, &new_dev);
+            println!("{} :: USB count: {} :: {}", Local::now(), self.total_devices, &dev_change);
             self.triggered = false;
         }
     }
