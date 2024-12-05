@@ -1,13 +1,13 @@
 use config::Config;
 use std::process::Command;
 
-pub async fn send_discord(message: &str, settings_map: Config) -> Result<(), anyhow::Error> {
+pub async fn send_discord(message: &str, settings_map: Config, append: &String) -> Result<(), anyhow::Error> {
     #[allow(unused)]
     let mut final_message = String::new();
 
     if let Ok(output) = Command::new("hostnamectl").arg("hostname").output() {
         if let Ok(hostname) = String::from_utf8(output.stdout) {
-            final_message = format!("{} Hostname: {}", message, hostname);
+            final_message = format!("{} Hostname: {} :: {}", message, hostname, append);
         } else {
             final_message = message.to_string();
         }

@@ -5,7 +5,7 @@ use std::thread;
 use std::time::Duration;
 
 pub async fn reboot_system(settings_map: Config) {
-    let _res = send_discord("System rebooting", settings_map).await;
+    let _res = send_discord("System rebooting", settings_map, &"".to_string()).await;
     if let Ok(reboot) = Command::new("reboot").output() {
         println!("{:#?}", reboot)
     }

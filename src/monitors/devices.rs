@@ -88,7 +88,7 @@ impl EventMonitor for USBMon {
 
         if self.triggered {
             println!("ALERT USB");
-            usb_triggered(self.settings_map.clone()).await;
+            usb_triggered(self.settings_map.clone(), &dev_change).await;
             println!("{} :: USB count: {} :: {}", Local::now(), self.total_devices, &dev_change);
             self.triggered = false;
         }
@@ -130,7 +130,7 @@ async fn get_usb_devices_physical() -> Vec<String> {
     devices
 }
 
-async fn usb_triggered(settings_map: Config) {
+async fn usb_triggered(settings_map: Config, dev_change: &String) {
     if settings_map
         .get::<String>("reboot_on_increase_of_usb_devices")
         .unwrap()
@@ -143,6 +143,6 @@ async fn usb_triggered(settings_map: Config) {
         .unwrap()
         .eq_ignore_ascii_case("true")
     {
-        let _ = send_discord("USB triggered", settings_map.clone()).await;
+        let _ = send_discord("USB triggered", settings_map.clone(), &dev_change).await;
     }
 }

@@ -310,7 +310,7 @@ async fn compare_all_snapshots(
 
 async fn fs_changes_alert(message: String, settings_map: Config) {
     println!("{}", message);
-    let _ = send_discord(message.as_str(), settings_map).await;
+    let _ = send_discord(message.as_str(), settings_map, &"".to_string()).await;
 }
 
 #[cfg(test)]
