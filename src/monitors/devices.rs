@@ -29,6 +29,7 @@ impl USBMon {
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
         let mut new_dev = String::new();
+        let mut miss_dev = String::new();
         let mut new_devices: Vec<String> = vec![];
         let n = get_usb_devices_physical().await;
         n.iter().for_each(|r| new_devices.push(r.to_string()));
@@ -36,23 +37,28 @@ impl EventMonitor for USBMon {
         d.iter().for_each(|r| new_devices.push(r.to_string()));
 
         if self.last_check != 0 && self.last_check != new_devices.len() {
-            self.devices.clone_from(&new_devices);
             self.total_devices = self.devices.len();
 
-            // println!("{:#?}", &new_devices);
 
-            for entry in n {
+            for entry in new_devices.iter() {
                 if !self.devices.contains(&entry) {
                     new_dev = entry.clone();
                 }
             }
 
-            for entry in d {
-                if !self.devices.contains(&entry) {
-                    new_dev = entry.clone();
+            for entry in self.devices.iter() {
+                if !new_devices.contains(&entry) {
+                    miss_dev = entry.clone();
                 }
             }
 
+            println!("{:#?}", &new_devices.len());
+            println!("{:#?}", self.devices.len());
+            println!("{:#?}", &new_dev);
+
+
+
+            self.devices.clone_from(&new_devices);
 
             match self.last_check < new_devices.len() {
                 true => {
