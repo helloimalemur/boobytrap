@@ -3,7 +3,7 @@ use crate::monitors::actions::reboot_system;
 use crate::monitors::notify::send_discord;
 use chrono::Local;
 use config::Config;
-use std::process::Command;
+use std::process::{exit, Command};
 
 #[derive(Debug)]
 pub struct USBMon {
@@ -28,6 +28,7 @@ impl USBMon {
 
 impl EventMonitor for USBMon {
     async fn check(&mut self) {
+        let mut new_dev = String::new();
         let mut new_devices: Vec<String> = vec![];
         let n = get_usb_devices_physical().await;
         n.iter().for_each(|r| new_devices.push(r.to_string()));
@@ -38,20 +39,37 @@ impl EventMonitor for USBMon {
             self.devices.clone_from(&new_devices);
             self.total_devices = self.devices.len();
 
+            // println!("{:#?}", &new_devices);
+
+            for entry in n {
+                if !self.devices.contains(&entry) {
+                    new_dev = entry.clone();
+                }
+            }
+
+            for entry in d {
+                if !self.devices.contains(&entry) {
+                    new_dev = entry.clone();
+                }
+            }
+
+
             match self.last_check < new_devices.len() {
                 true => {
                     self.triggered = true;
                     println!(
-                        "{} :: Total USB devices INCREASED: {}",
+                        "{} :: Total USB devices INCREASED: {} :: {}",
                         Local::now(),
-                        self.total_devices
+                        self.total_devices,
+                        &new_dev
                     );
                 }
                 false => {
                     println!(
-                        "{} :: Total USB devices DECREASED: {}",
+                        "{} :: Total USB devices DECREASED: {} :: {}",
                         Local::now(),
-                        self.total_devices
+                        self.total_devices,
+                        &new_dev
                     );
                 }
             }
@@ -77,7 +95,7 @@ impl EventMonitor for USBMon {
         if self.triggered {
             println!("ALERT USB");
             usb_triggered(self.settings_map.clone()).await;
-            println!("{} :: USB count: {}", Local::now(), self.total_devices);
+            println!("{} :: USB count: {} :: {}", Local::now(), self.total_devices, &new_dev);
             self.triggered = false;
         }
     }
